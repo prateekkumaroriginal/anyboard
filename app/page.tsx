@@ -27,6 +27,9 @@ export default function Home() {
           <Link href="/" className="opacity-60 hover:opacity-100 transition-opacity">
             Pricing
           </Link>
+          <Link href="/showcase" className="opacity-60 hover:opacity-100 transition-opacity">
+            Showcase
+          </Link>
           <Link
             href="/"
             className="px-5 py-2 border border-white/30 hover:bg-white hover:text-black transition-all"
