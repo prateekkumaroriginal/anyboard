@@ -10,14 +10,7 @@ export default function Home() {
     >
       {/* Grid overlay */}
       <div
-        className="fixed inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #fff 1px, transparent 1px),
-            linear-gradient(to bottom, #fff 1px, transparent 1px)
-          `,
-          backgroundSize: "48px 48px",
-        }}
+        className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px]"
       />
 
       <header className="relative z-10 flex items-center justify-between px-8 py-6 border-b border-white/10">
