@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,17 +10,18 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { ColorPicker } from "@/components/shared/color-picker";
-import { Label } from "@/components/shared/label";
+import { ProjectFormValues } from "@/lib/schemas";
 
 interface ProjectFormFieldsProps {
-  name: string;
-  onNameChange: (value: string) => void;
-  description: string;
-  onDescriptionChange: (value: string) => void;
-  color: string;
-  onColorChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  form: UseFormReturn<ProjectFormValues>;
+  onSubmit: (values: ProjectFormValues) => void;
   cardTitle: string;
   cardDescription: string;
   submitLabel: string;
@@ -33,12 +35,7 @@ interface ProjectFormFieldsProps {
 }
 
 export function ProjectFormFields({
-  name,
-  onNameChange,
-  description,
-  onDescriptionChange,
-  color,
-  onColorChange,
+  form,
   onSubmit,
   cardTitle,
   cardDescription,
@@ -57,46 +54,72 @@ export function ProjectFormFields({
         <CardDescription>{cardDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name" required>
-              Name
-            </Label>
-            <Input
-              id="name"
-              placeholder={namePlaceholder}
-              value={name}
-              onChange={(e) => onNameChange(e.target.value)}
-              autoFocus={autoFocusName}
-              required
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="project-name">
+                    Name <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="project-name"
+                    placeholder={namePlaceholder}
+                    autoFocus={autoFocusName}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">
-              Description
-            </Label>
-            <Textarea
-              id="description"
-              placeholder={descriptionPlaceholder}
-              value={description}
-              onChange={(e) => onDescriptionChange(e.target.value)}
-              rows={3}
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="project-description">
+                    Description
+                  </FieldLabel>
+                  <Textarea
+                    {...field}
+                    id="project-description"
+                    placeholder={descriptionPlaceholder}
+                    rows={3}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
 
-          <ColorPicker value={color} onChange={onColorChange} />
+            <Controller
+              name="color"
+              control={form.control}
+              render={({ field }) => (
+                <ColorPicker value={field.value} onChange={field.onChange} />
+              )}
+            />
 
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" disabled={!name.trim() || isSubmitting}>
-              {isSubmitting ? submittingLabel : submitLabel}
-            </Button>
-            {cancelHref && (
-              <Button variant="ghost" asChild>
-                <Link href={cancelHref}>Cancel</Link>
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="submit"
+                disabled={!form.formState.isValid || isSubmitting}
+              >
+                {isSubmitting ? submittingLabel : submitLabel}
               </Button>
-            )}
-          </div>
+              {cancelHref && (
+                <Button variant="ghost" asChild>
+                  <Link href={cancelHref}>Cancel</Link>
+                </Button>
+              )}
+            </div>
+          </FieldGroup>
         </form>
       </CardContent>
     </Card>

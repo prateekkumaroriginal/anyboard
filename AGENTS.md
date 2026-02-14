@@ -6,7 +6,9 @@
 - **Auth**: Clerk (modal mode, no dedicated auth routes)
 - **Backend**: Convex (queries, mutations, schema)
 - **UI**: shadcn/ui + Tailwind CSS
+- **Forms**: react-hook-form + zod (schema validation)
 - **Icons**: lucide-react
+- **Package Manager**: pnpm
 - **Fonts**: JetBrains Mono (default), Archivo Black (display headings)
 
 ## Project Structure
@@ -33,6 +35,7 @@ convex/
   dashboards.ts       # Dashboard queries/mutations
 lib/
   constants.ts        # Shared constants (colors, options, helpers)
+  schemas.ts          # Zod form schemas + inferred types
   utils.ts            # Utility functions (cn)
 ```
 
@@ -45,14 +48,14 @@ lib/
 ## Styling
 
 - **Theme accent**: `amber-400` — used for labels, icons, highlights
-- **Form labels**: Use `<Label>` from `@/components/shared/label` (bakes in amber style; `required` prop adds red asterisk)
+- **Form labels**: Use `<FieldLabel>` from `@/components/ui/field`; mark required fields with `<span className="text-destructive">*</span>`
 - **Input bg**: `bg-white/3` with `border-amber-400/15`
 - **Display headings**: `style={{ fontFamily: "var(--font-display), sans-serif" }}`
 - **Dark mode**: Always on (`<html className="dark">`), use semantic tokens (`text-foreground`, `bg-background`)
 - **Page containers**: `max-w-5xl mx-auto` for lists, `max-w-lg mx-auto` for forms
 - **Card grids**: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`
 - **Card hover**: `hover:border-primary/50 transition-colors cursor-pointer h-full`
-- **Form spacing**: `space-y-6` between fields, `space-y-2` between label and input
+- **Form spacing**: Use `<FieldGroup>` from `@/components/ui/field` for field spacing
 
 ## Component Patterns
 
@@ -88,15 +91,14 @@ export default function PageName() {
 
 ### Shared Components
 
-- `Label` — amber-styled form label; `required` prop auto-appends red asterisk
 - `EmptyState` — icon + title + description + optional action button
 - `CardSkeleton` — renders a grid of skeleton cards (uses shadcn `Skeleton`)
 - `ColorPicker` — color circle selector, consumes `COLOR_OPTIONS` from constants
-- `ProjectFormFields` — complete Card with form fields (name, description, color), accepts `cardTitle`, `cardDescription`, `submitLabel`, `cancelHref`, etc.
+- `ProjectFormFields` — complete Card with form fields (name, description, color), accepts `form: UseFormReturn<ProjectFormValues>`, `onSubmit`, `cardTitle`, `submitLabel`, `cancelHref`, etc.
 
 ### Dialog Components
 
-Dialogs own their internal form state. Parent only passes `open` / `onOpenChange` and identifiers.
+Dialogs own their internal `useForm` + submit handler. Parent only passes `open` / `onOpenChange` and identifiers.
 
 ```tsx
 <CreateDashboardDialog
@@ -104,6 +106,30 @@ Dialogs own their internal form state. Parent only passes `open` / `onOpenChange
   projectName={project.name}
   open={showNewDialog}
   onOpenChange={setShowNewDialog}
+/>
+```
+
+### Form Patterns
+
+- All forms use `react-hook-form` with `zodResolver` for validation
+- Schemas live in `lib/schemas.ts` — co-export `z.infer<>` types
+- Use `Controller` for all fields (provides per-field `fieldState` for `Field` integration)
+- Use `Field`, `FieldGroup`, `FieldLabel`, `FieldError` from `@/components/ui/field` for layout and error display
+- Async submit status (`isSubmitting`) managed via standalone `useState`, not `formState.isSubmitting`
+
+```tsx
+<Controller
+  name="fieldName"
+  control={form.control}
+  render={({ field, fieldState }) => (
+    <Field data-invalid={fieldState.invalid}>
+      <FieldLabel htmlFor="unique-id">
+        Label <span className="text-destructive">*</span>
+      </FieldLabel>
+      <Input {...field} id="unique-id" placeholder="..." />
+      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+    </Field>
+  )}
 />
 ```
 
@@ -143,3 +169,4 @@ Dialogs own their internal form state. Parent only passes `open` / `onOpenChange
 - Use `Doc<"tableName">` and `Id<"tableName">` for Convex types
 - Button and Switch components are excluded from the amber "Subtle" style overrides
 - `cursor: pointer` is applied globally to `button` elements via `globals.css`
+- Use react-hook-form + zod for all forms — no manual `useState` for form fields

@@ -2,32 +2,36 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
 import { COLOR_OPTIONS } from "@/lib/constants";
+import { projectSchema, ProjectFormValues } from "@/lib/schemas";
 
 export default function NewProjectPage() {
   const router = useRouter();
   const createProject = useMutation(api.projects.create);
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState(COLOR_OPTIONS[0].value);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || isSubmitting) return;
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectSchema),
+    defaultValues: { name: "", description: "", color: COLOR_OPTIONS[0].value },
+    mode: "onTouched",
+  });
+
+  const handleSubmit = async (values: ProjectFormValues) => {
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
     try {
       const projectId = await createProject({
-        name: name.trim(),
-        description: description.trim() || undefined,
-        color,
+        name: values.name.trim(),
+        description: values.description?.trim() || undefined,
+        color: values.color,
       });
       router.push(`/projects/${projectId}`);
     } catch {
@@ -46,12 +50,7 @@ export default function NewProjectPage() {
       </Link>
 
       <ProjectFormFields
-        name={name}
-        onNameChange={setName}
-        description={description}
-        onDescriptionChange={setDescription}
-        color={color}
-        onColorChange={setColor}
+        form={form}
         onSubmit={handleSubmit}
         cardTitle="Create Project"
         cardDescription="A project groups related dashboards together."
