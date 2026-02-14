@@ -118,34 +118,34 @@ export default function Showcase3() {
               <TabsTrigger value="v5" className="text-xs rounded-md px-3 h-7 transition-all duration-300">Underline</TabsTrigger>
             </TabsList>
 
-            {/* ── V1: Subtle — soft amber tint, ring only on focus ── */}
+            {/* ── V1: Subtle — uses bare defaults (styles baked into base components) ── */}
             <TabsContent value="v1">
               <div className="space-y-5 max-w-sm">
                 <div>
                   <label className="block text-xs text-amber-400/60 mb-1.5 font-medium">Input</label>
-                  <Input placeholder="Enter text..." className="text-sm h-10 px-4 rounded-md shadow-sm border-amber-400/15 bg-amber-400/[0.03] transition-all duration-300 focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0 focus:bg-amber-400/[0.05]" />
+                  <Input placeholder="Enter text..." />
                 </div>
                 <div>
                   <label className="block text-xs text-amber-400/60 mb-1.5 font-medium">Textarea</label>
-                  <Textarea placeholder="Type message..." rows={3} className="text-sm px-4 py-2.5 rounded-md shadow-sm border-amber-400/15 bg-amber-400/[0.03] transition-all duration-300 focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0 focus:bg-amber-400/[0.05]" />
+                  <Textarea placeholder="Type message..." rows={3} />
                 </div>
                 <div className="flex items-center gap-3">
                   <Switch defaultChecked />
                   <span className="text-sm text-white/70">Toggle switch</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Checkbox id="v1c" className="rounded-[4px] border-amber-400/25 data-[state=checked]:bg-amber-400 data-[state=checked]:border-amber-400 focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0" />
+                  <Checkbox id="v1c" />
                   <label htmlFor="v1c" className="text-sm text-white/70">Accept terms</label>
                 </div>
                 <div>
                   <label className="block text-xs text-amber-400/60 mb-1.5 font-medium">Radio</label>
                   <RadioGroup defaultValue="a" className="gap-2.5">
                     <div className="flex items-center gap-2.5">
-                      <RadioGroupItem value="a" id="v1ra" className="border-amber-400/25 text-amber-400 focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0" />
+                      <RadioGroupItem value="a" id="v1ra" />
                       <label htmlFor="v1ra" className="text-sm">Option A</label>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <RadioGroupItem value="b" id="v1rb" className="border-amber-400/25 text-amber-400 focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0" />
+                      <RadioGroupItem value="b" id="v1rb" />
                       <label htmlFor="v1rb" className="text-sm">Option B</label>
                     </div>
                   </RadioGroup>
@@ -153,12 +153,12 @@ export default function Showcase3() {
                 <div>
                   <label className="block text-xs text-amber-400/60 mb-1.5 font-medium">Select</label>
                   <Select>
-                    <SelectTrigger className="text-sm h-10 px-4 rounded-md shadow-sm border-amber-400/15 bg-amber-400/[0.03] focus-visible:border-transparent focus-visible:ring-[2px] focus-visible:ring-amber-400/70 focus-visible:ring-offset-0">
+                    <SelectTrigger>
                       <SelectValue placeholder="Pick one" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-lg shadow-lg shadow-black/30 border-amber-400/10">
-                      <SelectItem value="a" className="text-sm rounded-md">Option A</SelectItem>
-                      <SelectItem value="b" className="text-sm rounded-md">Option B</SelectItem>
+                    <SelectContent>
+                      <SelectItem value="a">Option A</SelectItem>
+                      <SelectItem value="b">Option B</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

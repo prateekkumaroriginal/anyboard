@@ -36,7 +36,7 @@ export default function Home() {
         </p>
         <div className="flex gap-4">
           <SignedOut>
-            <SignInButton mode="modal" fallbackRedirectUrl="/">
+            <SignInButton mode="modal" fallbackRedirectUrl="/projects">
               <Button variant="default">
                 Get Started
               </Button>

@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <ConvexClientProvider>
       <html lang="en" className="dark">
-        <body className={`${jetbrains.variable} ${archivo.variable} antialiased`}>
+        <body className={`${jetbrains.className} ${jetbrains.variable} ${archivo.variable} antialiased`}>
           <TooltipProvider>{children}</TooltipProvider>
         </body>
       </html>

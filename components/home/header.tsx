@@ -25,7 +25,7 @@ export function Header() {
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <SignInButton mode="modal" fallbackRedirectUrl="/">
+          <SignInButton mode="modal" fallbackRedirectUrl="/projects">
             <Button variant="outline">
               Start Free
             </Button>
