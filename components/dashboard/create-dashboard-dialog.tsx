@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -13,7 +15,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/shared/label";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { dashboardSchema, DashboardFormValues } from "@/lib/schemas";
 
 interface CreateDashboardDialogProps {
   projectId: string;
@@ -29,25 +37,30 @@ export function CreateDashboardDialog({
   onOpenChange,
 }: CreateDashboardDialogProps) {
   const createDashboard = useMutation(api.dashboards.create);
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim() || isCreating) return;
+  const form = useForm<DashboardFormValues>({
+    resolver: zodResolver(dashboardSchema),
+    defaultValues: { title: "", description: "" },
+    mode: "onTouched",
+  });
+
+  useEffect(() => {
+    if (open) form.reset();
+  }, [open, form]);
+
+  const handleSubmit = async (values: DashboardFormValues) => {
+    if (isCreating) return;
 
     setIsCreating(true);
     try {
       await createDashboard({
         projectId: projectId as Id<"projects">,
-        title: title.trim(),
-        description: description.trim() || undefined,
+        title: values.title.trim(),
+        description: values.description?.trim() || undefined,
       });
       onOpenChange(false);
-      setTitle("");
-      setDescription("");
+      form.reset();
     } finally {
       setIsCreating(false);
     }
@@ -62,43 +75,63 @@ export function CreateDashboardDialog({
             Add a new dashboard to {projectName}.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="dashboard-title" required>
-              Title
-            </Label>
-            <Input
-              id="dashboard-title"
-              placeholder="e.g. Monthly Revenue"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              autoFocus
-              required
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="dashboard-title">
+                    Title <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="dashboard-title"
+                    placeholder="e.g. Monthly Revenue"
+                    autoFocus
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dashboard-desc">
-              Description
-            </Label>
-            <Input
-              id="dashboard-desc"
-              placeholder="Optional description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="dashboard-desc">Description</FieldLabel>
+                  <Input
+                    {...field}
+                    id="dashboard-desc"
+                    placeholder="Optional description"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" disabled={!title.trim() || isCreating}>
-              {isCreating ? "Creating..." : "Create"}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-          </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="submit"
+                disabled={!form.formState.isValid || isCreating}
+              >
+                {isCreating ? "Creating..." : "Create"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </FieldGroup>
         </form>
       </DialogContent>
     </Dialog>

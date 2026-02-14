@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -14,6 +16,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import {
+  deleteProjectSchema,
+  DeleteProjectFormValues,
+} from "@/lib/schemas";
 
 interface DeleteProjectDialogProps {
   projectId: string;
@@ -30,12 +37,20 @@ export function DeleteProjectDialog({
 }: DeleteProjectDialogProps) {
   const router = useRouter();
   const removeProject = useMutation(api.projects.remove);
-
-  const [deleteConfirm, setDeleteConfirm] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const form = useForm<DeleteProjectFormValues>({
+    resolver: zodResolver(deleteProjectSchema(projectName)),
+    defaultValues: { confirmName: "" },
+    mode: "onTouched",
+  });
+
+  useEffect(() => {
+    if (open) form.reset();
+  }, [open, form]);
+
   const handleDelete = async () => {
-    if (deleteConfirm !== projectName || isDeleting) return;
+    if (isDeleting) return;
 
     setIsDeleting(true);
     try {
@@ -56,31 +71,46 @@ export function DeleteProjectDialog({
             its dashboards. Type the project name to confirm.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <Input
-            placeholder={projectName}
-            value={deleteConfirm}
-            onChange={(e) => setDeleteConfirm(e.target.value)}
-          />
-          <div className="flex gap-3">
-            <Button
-              variant="destructive"
-              disabled={deleteConfirm !== projectName || isDeleting}
-              onClick={handleDelete}
-            >
-              {isDeleting ? "Deleting..." : "Delete Project"}
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                onOpenChange(false);
-                setDeleteConfirm("");
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
+        <form onSubmit={form.handleSubmit(handleDelete)}>
+          <FieldGroup>
+            <Controller
+              name="confirmName"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <Input
+                    {...field}
+                    placeholder={projectName}
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && field.value.length > 0 && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <div className="flex gap-3">
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={!form.formState.isValid || isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Project"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  onOpenChange(false);
+                  form.reset();
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </FieldGroup>
+        </form>
       </DialogContent>
     </Dialog>
   );

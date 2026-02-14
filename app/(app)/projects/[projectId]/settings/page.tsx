@@ -1,8 +1,10 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -19,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
 import { DeleteProjectDialog } from "@/components/project/delete-project-dialog";
 import { COLOR_OPTIONS } from "@/lib/constants";
+import { projectSchema, ProjectFormValues } from "@/lib/schemas";
 
 export default function ProjectSettingsPage({
   params,
@@ -33,20 +36,24 @@ export default function ProjectSettingsPage({
   });
   const updateProject = useMutation(api.projects.update);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [initialized, setInitialized] = useState(false);
 
-  // Initialize form when project data arrives
-  if (project && !initialized) {
-    setName(project.name);
-    setDescription(project.description ?? "");
-    setColor(project.color ?? COLOR_OPTIONS[0].value);
-    setInitialized(true);
-  }
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectSchema),
+    defaultValues: { name: "", description: "", color: "" },
+    mode: "onTouched",
+  });
+
+  useEffect(() => {
+    if (project) {
+      form.reset({
+        name: project.name,
+        description: project.description ?? "",
+        color: project.color ?? COLOR_OPTIONS[0].value,
+      });
+    }
+  }, [project, form]);
 
   if (project === undefined) {
     return (
@@ -72,17 +79,16 @@ export default function ProjectSettingsPage({
     return null;
   }
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || isSaving) return;
+  const handleSave = async (values: ProjectFormValues) => {
+    if (isSaving) return;
 
     setIsSaving(true);
     try {
       await updateProject({
         id: projectId as Id<"projects">,
-        name: name.trim(),
-        description: description.trim() || undefined,
-        color,
+        name: values.name.trim(),
+        description: values.description?.trim() || undefined,
+        color: values.color,
       });
     } finally {
       setIsSaving(false);
@@ -102,12 +108,7 @@ export default function ProjectSettingsPage({
       <div className="space-y-8">
         {/* General Settings */}
         <ProjectFormFields
-          name={name}
-          onNameChange={setName}
-          description={description}
-          onDescriptionChange={setDescription}
-          color={color}
-          onColorChange={setColor}
+          form={form}
           onSubmit={handleSave}
           cardTitle="Project Settings"
           cardDescription="Update your project name, description, and color."
