@@ -79,12 +79,12 @@ export default function Showcase3() {
         {/* ── Buttons ── */}
         <Section title="Buttons">
           <div className="flex flex-wrap gap-3">
-            <Button className="text-sm px-5 py-2.5 h-auto rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.1)] transition-all duration-300">Default</Button>
-            <Button variant="secondary" className="text-sm px-5 py-2.5 h-auto rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.08)] transition-all duration-300">Secondary</Button>
-            <Button variant="outline" className="text-sm px-5 py-2.5 h-auto rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.08)] transition-all duration-300">Outline</Button>
-            <Button variant="ghost" className="text-sm px-5 py-2.5 h-auto rounded-lg hover:shadow-[0_0_16px_rgba(251,191,36,0.06)] transition-all duration-300">Ghost</Button>
-            <Button variant="link" className="text-sm px-0 h-auto rounded-lg">Link</Button>
-            <Button variant="destructive" className="text-sm px-5 py-2.5 h-auto rounded-lg shadow-sm transition-all duration-300">Destructive</Button>
+            <Button>Default</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="link" className="px-0">Link</Button>
+            <Button variant="destructive">Destructive</Button>
           </div>
         </Section>
 
@@ -94,7 +94,7 @@ export default function Showcase3() {
             <Toggle aria-label="Toggle" className="text-sm h-10 px-4 min-w-10 rounded-lg transition-all duration-300">Aa</Toggle>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.08)] transition-all duration-300">Menu</Button>
+                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm transition-all duration-300">Menu</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="rounded-xl shadow-lg shadow-black/30 border-white/10 min-w-[160px]">
                 <DropdownMenuLabel className="text-xs text-white/40">Actions</DropdownMenuLabel>
@@ -386,7 +386,7 @@ export default function Showcase3() {
               <p className="text-sm text-white/60">Card content goes here.</p>
             </CardContent>
             <CardFooter className="px-6">
-              <Button className="text-sm px-4 py-2 h-auto rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.1)] transition-all duration-300">Action</Button>
+              <Button className="text-sm px-4 py-2 h-auto rounded-lg shadow-sm transition-all duration-300">Action</Button>
             </CardFooter>
           </Card>
         </Section>
@@ -466,7 +466,7 @@ export default function Showcase3() {
           <div className="flex gap-3">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.08)] transition-all duration-300">Open Dialog</Button>
+                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm transition-all duration-300">Open Dialog</Button>
               </DialogTrigger>
               <DialogContent className="rounded-2xl shadow-2xl shadow-black/40">
                 <DialogHeader>
@@ -480,7 +480,7 @@ export default function Showcase3() {
             </Dialog>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm hover:shadow-[0_0_16px_rgba(251,191,36,0.08)] transition-all duration-300">Tooltip</Button>
+                <Button variant="outline" className="text-sm px-5 h-10 rounded-lg shadow-sm transition-all duration-300">Tooltip</Button>
               </TooltipTrigger>
               <TooltipContent className="rounded-lg shadow-lg shadow-black/30 text-sm px-3 py-1.5">
                 <p>Tooltip message</p>
