@@ -1,8 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -14,22 +14,34 @@ import { CardSkeleton } from "@/components/shared/card-skeleton";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { CreateDashboardDialog } from "@/components/dashboard/create-dashboard-dialog";
 
-export default function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const { projectId } = use(params);
+export default function ProjectDetailPage() {
+  const { projectId } = useParams<{ projectId: string }>();
   const router = useRouter();
 
-  const project = useQuery(api.projects.get, {
-    id: projectId as Id<"projects">,
-  });
-  const dashboards = useQuery(api.dashboards.listByProject, {
-    projectId: projectId as Id<"projects">,
-  });
+  const project = useQuery(
+    api.projects.get,
+    projectId
+      ? {
+          id: projectId as Id<"projects">,
+        }
+      : "skip"
+  );
+  const dashboards = useQuery(
+    api.dashboards.listByProject,
+    projectId
+      ? {
+          projectId: projectId as Id<"projects">,
+        }
+      : "skip"
+  );
 
   const [showNewDialog, setShowNewDialog] = useState(false);
+
+  useEffect(() => {
+    if (!projectId || project === null) {
+      router.push("/projects");
+    }
+  }, [project, projectId, router]);
 
   if (project === undefined) {
     return (
@@ -43,8 +55,7 @@ export default function ProjectDetailPage({
     );
   }
 
-  if (project === null) {
-    router.push("/projects");
+  if (!projectId || project === null) {
     return null;
   }
 

@@ -1,5 +1,14 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import {
+  assertMaxLength,
+  assertPublicSlug,
+  assertRefreshInterval,
+  assertTrimmedNonEmpty,
+  DASHBOARD_DESCRIPTION_MAX_LENGTH,
+  DASHBOARD_TITLE_MAX_LENGTH,
+  normalizeOptionalText,
+} from "../lib/convex-validation";
 
 export const listByProject = query({
   args: { projectId: v.id("projects") },
@@ -52,11 +61,20 @@ export const create = mutation({
       throw new Error("Project not found");
     }
 
+    const title = assertTrimmedNonEmpty(args.title, "Dashboard title");
+    assertMaxLength(title, DASHBOARD_TITLE_MAX_LENGTH, "Dashboard title");
+
+    const description = normalizeOptionalText(
+      args.description,
+      DASHBOARD_DESCRIPTION_MAX_LENGTH,
+      "Dashboard description"
+    );
+
     const now = Date.now();
     return ctx.db.insert("dashboards", {
       projectId: args.projectId,
-      title: args.title,
-      description: args.description,
+      title,
+      description,
       isPublic: false,
       layout: [],
       createdAt: now,
@@ -97,13 +115,42 @@ export const update = mutation({
       throw new Error("Dashboard not found");
     }
 
-    const { id, ...fields } = args;
     const updates: Record<string, unknown> = { updatedAt: Date.now() };
-    for (const [key, value] of Object.entries(fields)) {
-      if (value !== undefined) updates[key] = value;
+
+    if (args.title !== undefined) {
+      const title = assertTrimmedNonEmpty(args.title, "Dashboard title");
+      assertMaxLength(title, DASHBOARD_TITLE_MAX_LENGTH, "Dashboard title");
+      updates.title = title;
     }
 
-    await ctx.db.patch(id, updates);
+    if (args.description !== undefined) {
+      updates.description = normalizeOptionalText(
+        args.description,
+        DASHBOARD_DESCRIPTION_MAX_LENGTH,
+        "Dashboard description"
+      );
+    }
+
+    if (args.isPublic !== undefined) {
+      updates.isPublic = args.isPublic;
+    }
+
+    if (args.publicSlug !== undefined) {
+      const publicSlug = args.publicSlug.trim() || undefined;
+      assertPublicSlug(publicSlug);
+      updates.publicSlug = publicSlug;
+    }
+
+    if (args.layout !== undefined) {
+      updates.layout = args.layout;
+    }
+
+    if (args.refreshInterval !== undefined) {
+      assertRefreshInterval(args.refreshInterval);
+      updates.refreshInterval = args.refreshInterval;
+    }
+
+    await ctx.db.patch(args.id, updates);
   },
 });
 

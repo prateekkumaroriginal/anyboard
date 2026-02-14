@@ -1,11 +1,12 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
+import { useForm } from "@tanstack/react-form";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,36 +20,33 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
 import { DeleteProjectDialog } from "@/components/project/delete-project-dialog";
 import { COLOR_OPTIONS } from "@/lib/constants";
+import {
+  projectFormSchema,
+  toProjectMutationValues,
+} from "@/lib/validation/project";
 
-export default function ProjectSettingsPage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const { projectId } = use(params);
+export default function ProjectSettingsPage() {
+  const { projectId } = useParams<{ projectId: string }>();
   const router = useRouter();
 
-  const project = useQuery(api.projects.get, {
-    id: projectId as Id<"projects">,
-  });
-  const updateProject = useMutation(api.projects.update);
+  const project = useQuery(
+    api.projects.get,
+    projectId
+      ? {
+          id: projectId as Id<"projects">,
+        }
+      : "skip"
+  );
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [initialized, setInitialized] = useState(false);
 
-  // Initialize form when project data arrives
-  if (project && !initialized) {
-    setName(project.name);
-    setDescription(project.description ?? "");
-    setColor(project.color ?? COLOR_OPTIONS[0].value);
-    setInitialized(true);
-  }
+  useEffect(() => {
+    if (project === null) {
+      router.push("/projects");
+    }
+  }, [project, router]);
 
-  if (project === undefined) {
+  if (!projectId || project === undefined) {
     return (
       <div className="max-w-lg mx-auto">
         <div className="space-y-6">
@@ -67,27 +65,7 @@ export default function ProjectSettingsPage({
     );
   }
 
-  if (project === null) {
-    router.push("/projects");
-    return null;
-  }
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || isSaving) return;
-
-    setIsSaving(true);
-    try {
-      await updateProject({
-        id: projectId as Id<"projects">,
-        name: name.trim(),
-        description: description.trim() || undefined,
-        color,
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  if (project === null) return null;
 
   return (
     <div className="max-w-lg mx-auto">
@@ -101,19 +79,10 @@ export default function ProjectSettingsPage({
 
       <div className="space-y-8">
         {/* General Settings */}
-        <ProjectFormFields
-          name={name}
-          onNameChange={setName}
-          description={description}
-          onDescriptionChange={setDescription}
-          color={color}
-          onColorChange={setColor}
-          onSubmit={handleSave}
-          cardTitle="Project Settings"
-          cardDescription="Update your project name, description, and color."
-          submitLabel="Save Changes"
-          submittingLabel="Saving..."
-          isSubmitting={isSaving}
+        <ProjectSettingsForm
+          key={`${project._id}-${project.updatedAt}`}
+          projectId={projectId}
+          project={project}
         />
 
         {/* Danger Zone */}
@@ -143,5 +112,42 @@ export default function ProjectSettingsPage({
         onOpenChange={setShowDeleteDialog}
       />
     </div>
+  );
+}
+
+function ProjectSettingsForm({
+  projectId,
+  project,
+}: {
+  projectId: string;
+  project: Doc<"projects">;
+}) {
+  const updateProject = useMutation(api.projects.update);
+  const form = useForm({
+    defaultValues: {
+      name: project.name,
+      description: project.description ?? "",
+      color: project.color ?? COLOR_OPTIONS[0].value,
+    },
+    validators: {
+      onChange: projectFormSchema,
+      onSubmit: projectFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      await updateProject({
+        id: projectId as Id<"projects">,
+        ...toProjectMutationValues(value),
+      });
+    },
+  });
+
+  return (
+    <ProjectFormFields
+      form={form}
+      cardTitle="Project Settings"
+      cardDescription="Update your project name, description, and color."
+      submitLabel="Save Changes"
+      submittingLabel="Saving..."
+    />
   );
 }

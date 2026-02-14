@@ -1,5 +1,13 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import {
+  assertAllowedProjectColor,
+  assertMaxLength,
+  assertTrimmedNonEmpty,
+  normalizeOptionalText,
+  PROJECT_DESCRIPTION_MAX_LENGTH,
+  PROJECT_NAME_MAX_LENGTH,
+} from "../lib/convex-validation";
 
 export const list = query({
   handler: async (ctx) => {
@@ -37,12 +45,24 @@ export const create = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
 
+    const name = assertTrimmedNonEmpty(args.name, "Project name");
+    assertMaxLength(name, PROJECT_NAME_MAX_LENGTH, "Project name");
+
+    const description = normalizeOptionalText(
+      args.description,
+      PROJECT_DESCRIPTION_MAX_LENGTH,
+      "Project description"
+    );
+
+    const color = args.color?.trim() || undefined;
+    assertAllowedProjectColor(color);
+
     const now = Date.now();
     return ctx.db.insert("projects", {
       userId: identity.subject,
-      name: args.name,
-      description: args.description,
-      color: args.color,
+      name,
+      description,
+      color,
       createdAt: now,
       updatedAt: now,
     });
@@ -66,9 +86,26 @@ export const update = mutation({
     }
 
     const updates: Record<string, unknown> = { updatedAt: Date.now() };
-    if (args.name !== undefined) updates.name = args.name;
-    if (args.description !== undefined) updates.description = args.description;
-    if (args.color !== undefined) updates.color = args.color;
+
+    if (args.name !== undefined) {
+      const name = assertTrimmedNonEmpty(args.name, "Project name");
+      assertMaxLength(name, PROJECT_NAME_MAX_LENGTH, "Project name");
+      updates.name = name;
+    }
+
+    if (args.description !== undefined) {
+      updates.description = normalizeOptionalText(
+        args.description,
+        PROJECT_DESCRIPTION_MAX_LENGTH,
+        "Project description"
+      );
+    }
+
+    if (args.color !== undefined) {
+      const color = args.color.trim() || undefined;
+      assertAllowedProjectColor(color);
+      updates.color = color;
+    }
 
     await ctx.db.patch(args.id, updates);
   },

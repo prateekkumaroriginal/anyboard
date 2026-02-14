@@ -1,39 +1,37 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
+import { useForm } from "@tanstack/react-form";
 import { api } from "@/convex/_generated/api";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
 import { COLOR_OPTIONS } from "@/lib/constants";
+import {
+  projectFormSchema,
+  toProjectMutationValues,
+} from "@/lib/validation/project";
 
 export default function NewProjectPage() {
   const router = useRouter();
   const createProject = useMutation(api.projects.create);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState(COLOR_OPTIONS[0].value);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || isSubmitting) return;
-
-    setIsSubmitting(true);
-    try {
-      const projectId = await createProject({
-        name: name.trim(),
-        description: description.trim() || undefined,
-        color,
-      });
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+      color: COLOR_OPTIONS[0].value,
+    },
+    validators: {
+      onChange: projectFormSchema,
+      onSubmit: projectFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const projectId = await createProject(toProjectMutationValues(value));
       router.push(`/projects/${projectId}`);
-    } catch {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   return (
     <div className="max-w-lg mx-auto">
@@ -46,18 +44,11 @@ export default function NewProjectPage() {
       </Link>
 
       <ProjectFormFields
-        name={name}
-        onNameChange={setName}
-        description={description}
-        onDescriptionChange={setDescription}
-        color={color}
-        onColorChange={setColor}
-        onSubmit={handleSubmit}
+        form={form}
         cardTitle="Create Project"
         cardDescription="A project groups related dashboards together."
         submitLabel="Create Project"
         submittingLabel="Creating..."
-        isSubmitting={isSubmitting}
         autoFocusName
         cancelHref="/projects"
       />
