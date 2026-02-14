@@ -1,6 +1,7 @@
-"use client";
-
 import Link from "next/link";
+import { SignInButton, SignedOut } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/home/header";
 
 export default function Home() {
   return (
@@ -13,31 +14,7 @@ export default function Home() {
         className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px]"
       />
 
-      <header className="relative z-10 flex items-center justify-between px-8 py-6 border-b border-white/10">
-        <span
-          className="text-lg tracking-[0.3em] uppercase"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          AnyBoard
-        </span>
-        <nav className="flex gap-12">
-          <Link href="/" className="opacity-60 hover:opacity-100 transition-opacity">
-            Product
-          </Link>
-          <Link href="/" className="opacity-60 hover:opacity-100 transition-opacity">
-            Pricing
-          </Link>
-          <Link href="/showcase" className="opacity-60 hover:opacity-100 transition-opacity">
-            Showcase
-          </Link>
-          <Link
-            href="/"
-            className="px-5 py-2 border border-white/30 hover:bg-white hover:text-black transition-all"
-          >
-            Start Free
-          </Link>
-        </nav>
-      </header>
+      <Header />
 
       <main className="relative z-10 max-w-6xl mx-auto px-8 pt-24 pb-32">
         <div className="mb-4 text-amber-400/80 text-sm tracking-widest uppercase">
@@ -58,12 +35,13 @@ export default function Home() {
           dashboards within your tier. No surprises.
         </p>
         <div className="flex gap-4">
-          <Link
-            href="/"
-            className="px-8 py-4 bg-amber-400 text-black font-medium hover:bg-amber-300 transition-colors"
-          >
-            Get Started
-          </Link>
+          <SignedOut>
+            <SignInButton mode="modal" fallbackRedirectUrl="/">
+              <Button variant="default">
+                Get Started
+              </Button>
+            </SignInButton>
+          </SignedOut>
           <Link
             href="/"
             className="px-8 py-4 border border-white/20 hover:border-white/50 transition-colors"
