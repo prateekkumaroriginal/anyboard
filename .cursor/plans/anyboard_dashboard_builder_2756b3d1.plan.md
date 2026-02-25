@@ -44,14 +44,14 @@ isProject: false
 
 ### Tables
 
-`**users**` (synced from Clerk via webhook)
+`**users`** (synced from Clerk via webhook)
 
 - `clerkId: string` — Clerk user ID
 - `email: string`
 - `name: string`
 - `imageUrl?: string`
 
-`**projects**`
+`**projects`**
 
 - `userId: Id<"users">` — owner
 - `name: string`
@@ -60,7 +60,7 @@ isProject: false
 - `createdAt: number`
 - `updatedAt: number`
 
-`**dashboards**`
+`**dashboards`**
 
 - `projectId: Id<"projects">` — parent project
 - `title: string`
@@ -75,8 +75,7 @@ isProject: false
 
 `**dataSources**`
 
-- `userId: Id<"users">`
-- `dashboardId: Id<"dashboards">`
+- `projectId: Id<"projects">`
 - `name: string`
 - `config: object`:
   - `url: string`
@@ -149,6 +148,11 @@ app/
             page.tsx                       # Dashboard view (live)
             edit/page.tsx                  # Dashboard editor (drag-and-drop builder)
             settings/page.tsx              # Dashboard settings (title, sharing, refresh)
+        data-sources/
+          page.tsx                         # Project-level data sources list
+          new/page.tsx                     # Add data source (wizard as page)
+          [dataSourceId]/
+            edit/page.tsx                  # Edit data source (wizard as page)
   d/
     [slug]/page.tsx                        # Public shared dashboard (no auth required)
   api/
@@ -222,15 +226,15 @@ flowchart TD
 
 ### Phase 2: Data Source Configuration
 
-- **Data Source Wizard** (multi-step form):
+- **Data Source Wizard (page-based)** (multi-step form):
   1. Enter REST endpoint URL + method
   2. Configure headers and authentication (API key / Bearer / Basic)
   3. Add query parameters (key-value pairs)
   4. "Test Connection" button — Convex action hits the endpoint, returns sample response
   5. Auto-detect schema from response — show field names, inferred types, sample values
   6. User confirms/edits schema (rename fields, change types, set `responseDataPath` for nested data)
-  7. Save data source
-- **Convex action: `fetchExternalApi**`
+  7. Save data source (project-level)
+- **Convex action: `fetchExternalApi`**
   - Accepts data source config
   - Makes the HTTP request server-side (no CORS issues)
   - Caches response in Convex with TTL
@@ -329,6 +333,9 @@ flowchart TD
 - `app/(app)/projects/[projectId]/dashboards/[dashboardId]/page.tsx` — live view
 - `app/(app)/projects/[projectId]/dashboards/[dashboardId]/edit/page.tsx` — builder
 - `app/(app)/projects/[projectId]/dashboards/[dashboardId]/settings/page.tsx`
+- `app/(app)/projects/[projectId]/data-sources/page.tsx`
+- `app/(app)/projects/[projectId]/data-sources/new/page.tsx`
+- `app/(app)/projects/[projectId]/data-sources/[dataSourceId]/edit/page.tsx`
 - `app/d/[slug]/page.tsx` — public view
 - `app/api/webhooks/clerk/route.ts`
 

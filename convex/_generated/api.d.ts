@@ -9,6 +9,7 @@
  */
 
 import type * as dashboards from "../dashboards.js";
+import type * as dataSources from "../dataSources.js";
 import type * as projects from "../projects.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   dashboards: typeof dashboards;
+  dataSources: typeof dataSources;
   projects: typeof projects;
 }>;
 

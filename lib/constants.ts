@@ -24,3 +24,27 @@ export function getColorClass(color?: string, index: number = 0) {
   if (color) return color;
   return PROJECT_COLORS[index % PROJECT_COLORS.length];
 }
+
+export const HTTP_METHOD_OPTIONS = [
+  { value: "GET", label: "GET" },
+  { value: "POST", label: "POST" },
+] as const;
+
+export const AUTH_TYPE_OPTIONS = [
+  { value: "none", label: "None" },
+  { value: "apiKey", label: "API Key" },
+  { value: "bearer", label: "Bearer Token" },
+  { value: "basic", label: "Basic Auth" },
+] as const;
+
+export const RESPONSE_TYPE_OPTIONS = [
+  { value: "array", label: "Array of records" },
+  { value: "object", label: "Single object/value" },
+] as const;
+
+export const FIELD_TYPE_OPTIONS = [
+  { value: "string", label: "String" },
+  { value: "number", label: "Number" },
+  { value: "boolean", label: "Boolean" },
+  { value: "date", label: "Date" },
+] as const;
