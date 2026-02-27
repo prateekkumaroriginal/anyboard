@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { Plus, LayoutDashboard, Settings } from "lucide-react";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Plus, LayoutDashboard, Settings, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -30,6 +30,8 @@ export default function ProjectDetailPage({
   });
 
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [editingDashboard, setEditingDashboard] =
+    useState<Doc<"dashboards"> | null>(null);
 
   if (project === undefined) {
     return (
@@ -65,12 +67,23 @@ export default function ProjectDetailPage({
           )}
         </div>
         <div className="flex gap-2 items-center">
+          <Button variant="outline" asChild>
+            <Link href={`/projects/${projectId}/data-sources`}>
+              <Database className="h-4 w-4 mr-2" />
+              Data Sources
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/projects/${projectId}/settings`}>
               <Settings className="h-4 w-4" />
             </Link>
           </Button>
-          <Button onClick={() => setShowNewDialog(true)}>
+          <Button
+            onClick={() => {
+              setEditingDashboard(null);
+              setShowNewDialog(true);
+            }}
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Dashboard
           </Button>
@@ -85,19 +98,28 @@ export default function ProjectDetailPage({
           title="No dashboards yet"
           description="Create your first dashboard to start visualizing your data."
           action={
-            <Button onClick={() => setShowNewDialog(true)}>
+            <Button
+              onClick={() => {
+                setEditingDashboard(null);
+                setShowNewDialog(true);
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Dashboard
             </Button>
           }
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {dashboards.map((dashboard) => (
             <DashboardCard
               key={dashboard._id}
               dashboard={dashboard}
               projectId={projectId}
+              onEdit={(next) => {
+                setEditingDashboard(next);
+                setShowNewDialog(true);
+              }}
             />
           ))}
         </div>
@@ -106,8 +128,12 @@ export default function ProjectDetailPage({
       <CreateDashboardDialog
         projectId={projectId}
         projectName={project.name}
+        dashboard={editingDashboard}
         open={showNewDialog}
-        onOpenChange={setShowNewDialog}
+        onOpenChange={(open) => {
+          setShowNewDialog(open);
+          if (!open) setEditingDashboard(null);
+        }}
       />
     </div>
   );

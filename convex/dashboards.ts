@@ -122,19 +122,12 @@ export const remove = mutation({
     }
 
     // Cascade: parallel queries + batch delete
-    const [dataSources, widgets] = await Promise.all([
-      ctx.db
-        .query("dataSources")
-        .withIndex("by_dashboardId", (q) => q.eq("dashboardId", args.id))
-        .collect(),
-      ctx.db
-        .query("widgets")
-        .withIndex("by_dashboardId", (q) => q.eq("dashboardId", args.id))
-        .collect(),
-    ]);
+    const widgets = await ctx.db
+      .query("widgets")
+      .withIndex("by_dashboardId", (q) => q.eq("dashboardId", args.id))
+      .collect();
 
     await Promise.all([
-      ...dataSources.map((ds) => ctx.db.delete(ds._id)),
       ...widgets.map((w) => ctx.db.delete(w._id)),
       ctx.db.delete(args.id),
     ]);

@@ -44,11 +44,11 @@ export default defineSchema({
 
   dataSources: defineTable({
     projectId: v.id("projects"),
-    dashboardId: v.id("dashboards"),
     name: v.string(),
     config: v.object({
       url: v.string(),
       method: v.union(v.literal("GET"), v.literal("POST")),
+      responseType: v.union(v.literal("array"), v.literal("object")),
       headers: v.optional(v.any()),
       authType: v.optional(
         v.union(
@@ -72,9 +72,7 @@ export default defineSchema({
     ),
     cacheTtl: v.optional(v.number()),
     lastFetchedAt: v.optional(v.number()),
-  })
-    .index("by_dashboardId", ["dashboardId"])
-    .index("by_projectId", ["projectId"]),
+  }).index("by_projectId", ["projectId"]),
 
   widgets: defineTable({
     projectId: v.id("projects"),

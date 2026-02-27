@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,6 +28,7 @@ interface CreateDashboardDialogProps {
   projectName: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  dashboard?: Doc<"dashboards"> | null;
 }
 
 export function CreateDashboardDialog({
@@ -35,9 +36,12 @@ export function CreateDashboardDialog({
   projectName,
   open,
   onOpenChange,
+  dashboard,
 }: CreateDashboardDialogProps) {
   const createDashboard = useMutation(api.dashboards.create);
-  const [isCreating, setIsCreating] = useState(false);
+  const updateDashboard = useMutation(api.dashboards.update);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditMode = Boolean(dashboard);
 
   const form = useForm<DashboardFormValues>({
     resolver: zodResolver(dashboardSchema),
@@ -46,33 +50,49 @@ export function CreateDashboardDialog({
   });
 
   useEffect(() => {
-    if (open) form.reset();
-  }, [open, form]);
+    if (!open) return;
+    form.reset({
+      title: dashboard?.title ?? "",
+      description: dashboard?.description ?? "",
+    });
+  }, [open, dashboard, form]);
 
   const handleSubmit = async (values: DashboardFormValues) => {
-    if (isCreating) return;
+    if (isSubmitting) return;
 
-    setIsCreating(true);
+    setIsSubmitting(true);
     try {
-      await createDashboard({
-        projectId: projectId as Id<"projects">,
-        title: values.title.trim(),
-        description: values.description?.trim() || undefined,
-      });
+      if (dashboard) {
+        await updateDashboard({
+          id: dashboard._id,
+          title: values.title.trim(),
+          description: values.description?.trim() || undefined,
+        });
+      } else {
+        await createDashboard({
+          projectId: projectId as Id<"projects">,
+          title: values.title.trim(),
+          description: values.description?.trim() || undefined,
+        });
+      }
       onOpenChange(false);
       form.reset();
     } finally {
-      setIsCreating(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent closeOnOutside={false}>
         <DialogHeader>
-          <DialogTitle>Create Dashboard</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Edit Dashboard" : "Create Dashboard"}
+          </DialogTitle>
           <DialogDescription>
-            Add a new dashboard to {projectName}.
+            {isEditMode
+              ? `Update dashboard details in ${projectName}.`
+              : `Add a new dashboard to ${projectName}.`}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -119,9 +139,15 @@ export function CreateDashboardDialog({
             <div className="flex gap-3 pt-2">
               <Button
                 type="submit"
-                disabled={!form.formState.isValid || isCreating}
+                disabled={!form.formState.isValid || isSubmitting}
               >
-                {isCreating ? "Creating..." : "Create"}
+                {isSubmitting
+                  ? isEditMode
+                    ? "Saving..."
+                    : "Creating..."
+                  : isEditMode
+                    ? "Save Changes"
+                    : "Create"}
               </Button>
               <Button
                 type="button"
