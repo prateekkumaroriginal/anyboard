@@ -54,12 +54,16 @@ export default function ProjectDetailPage({
     <div className="max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1
-            className="text-2xl font-bold tracking-tight"
-            style={{ fontFamily: "var(--font-display), sans-serif" }}
-          >
-            {project.name}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {project.name}
+            </h1>
+            <Button variant="ghost" size="icon" asChild>
+              <Link href={`/projects/${projectId}/settings`}>
+                <Settings className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
           {project.description && (
             <p className="text-muted-foreground text-sm mt-1">
               {project.description}
@@ -71,11 +75,6 @@ export default function ProjectDetailPage({
             <Link href={`/projects/${projectId}/data-sources`}>
               <Database className="h-4 w-4 mr-2" />
               Data Sources
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/projects/${projectId}/settings`}>
-              <Settings className="h-4 w-4" />
             </Link>
           </Button>
           <Button

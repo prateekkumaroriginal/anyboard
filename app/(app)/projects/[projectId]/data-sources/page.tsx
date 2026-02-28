@@ -64,12 +64,13 @@ export default function ProjectDataSourcesPage({
   return (
     <div className="max-w-5xl mx-auto">
       <div className="mb-8 space-y-3">
-        <Button variant="ghost" asChild className="w-fit">
-          <Link href={`/projects/${projectId}`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to {project.name}
-          </Link>
-        </Button>
+        <Link
+          href={`/projects/${projectId}`}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Link>
 
         <div className="flex items-center justify-between gap-4">
           <div>
