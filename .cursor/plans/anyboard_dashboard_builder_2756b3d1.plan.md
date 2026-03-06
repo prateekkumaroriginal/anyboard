@@ -73,7 +73,7 @@ isProject: false
 - `createdAt: number`
 - `updatedAt: number`
 
-`**dataSources**`
+`**dataSources`**
 
 - `projectId: Id<"projects">`
 - `name: string`
@@ -90,7 +90,7 @@ isProject: false
 - `cacheTtl?: number` — seconds to cache response
 - `lastFetchedAt?: number`
 
-`**widgets**`
+`**widgets`**
 
 - `dashboardId: Id<"dashboards">`
 - `dataSourceId: Id<"dataSources">`
