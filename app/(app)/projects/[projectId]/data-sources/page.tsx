@@ -85,7 +85,7 @@ export default function ProjectDataSourcesPage({
             </p>
           </div>
           <Button asChild>
-            <Link href={`${dataSourcesBaseHref}/new`}>
+            <Link prefetch href={`${dataSourcesBaseHref}/new`}>
               <Plus className="h-4 w-4 mr-2" />
               Add Data Source
             </Link>
@@ -102,7 +102,7 @@ export default function ProjectDataSourcesPage({
           description="Add your first API connection to start powering widgets."
           action={
             <Button asChild>
-              <Link href={`${dataSourcesBaseHref}/new`}>
+              <Link prefetch href={`${dataSourcesBaseHref}/new`}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Data Source
               </Link>

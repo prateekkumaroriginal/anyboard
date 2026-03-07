@@ -9,7 +9,6 @@ import { api } from "@/convex/_generated/api";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
-import { COLOR_OPTIONS } from "@/lib/constants";
 import { projectSchema, ProjectFormValues } from "@/lib/schemas";
 
 export default function NewProjectPage() {
@@ -19,7 +18,7 @@ export default function NewProjectPage() {
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
-    defaultValues: { name: "", description: "", color: COLOR_OPTIONS[0].value },
+    defaultValues: { name: "", description: "" },
     mode: "onTouched",
   });
 
@@ -31,7 +30,6 @@ export default function NewProjectPage() {
       const projectId = await createProject({
         name: values.name.trim(),
         description: values.description?.trim() || undefined,
-        color: values.color,
       });
       router.push(`/projects/${projectId}`);
     } catch {

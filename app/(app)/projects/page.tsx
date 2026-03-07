@@ -27,7 +27,7 @@ export default function ProjectsPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/projects/new">
+          <Link prefetch href="/projects/new">
             <Plus className="h-4 w-4 mr-2" />
             New Project
           </Link>
@@ -43,7 +43,7 @@ export default function ProjectsPage() {
           description="Create your first project to start building dashboards with your data."
           action={
             <Button asChild>
-              <Link href="/projects/new">
+              <Link prefetch href="/projects/new">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Project
               </Link>
@@ -52,8 +52,8 @@ export default function ProjectsPage() {
         />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {projects.map((project, index) => (
-            <ProjectCard key={project._id} project={project} index={index} />
+          {projects.map((project) => (
+            <ProjectCard key={project._id} project={project} />
           ))}
         </div>
       )}

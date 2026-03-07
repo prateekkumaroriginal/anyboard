@@ -86,7 +86,6 @@ export function DataSourceCard({
           <Badge variant="secondary">
             {dataSource.config.responseType}
           </Badge>
-          <span>{dataSource.schema.length} fields</span>
           <span className="text-amber-400/80">
             Last fetched {formatLastFetched(dataSource.lastFetchedAt)}
           </span>

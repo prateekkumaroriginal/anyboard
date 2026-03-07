@@ -11,13 +11,13 @@ import {
   AUTH_TYPE_OPTIONS,
   HTTP_METHOD_OPTIONS,
   RESPONSE_TYPE_OPTIONS,
+  DATA_SOURCE_STEP_TITLES,
 } from "@/lib/constants";
 import { extractDataAtPath } from "@/lib/data-utils";
 import {
   dataSourceSchema,
   DataSourceFormValues,
   KeyValuePair,
-  SchemaFieldFormValues,
 } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,23 +40,12 @@ import {
   ConnectionTestResult,
   ConnectionTestState,
 } from "@/components/data-source/connection-test-result";
-import { SchemaFieldEditor } from "@/components/data-source/schema-field-editor";
 
 interface DataSourceWizardProps {
   projectId: string;
-  title: string;
   onCancel: () => void;
   onSuccess: () => void;
-  dataSource?: Doc<"dataSources"> | null;
 }
-
-const STEP_TITLES: Record<number, string> = {
-  1: "Basic Configuration",
-  2: "Authentication and Headers",
-  3: "Test Connection and Data Path",
-  4: "Define Schema",
-  5: "Review and Save",
-};
 
 type DataSourceFormInputValues = z.input<typeof dataSourceSchema>;
 
@@ -68,80 +57,27 @@ function toKeyValuePairs(input: unknown): KeyValuePair[] {
   }));
 }
 
-function toSchemaFields(input: Doc<"dataSources">["schema"]): SchemaFieldFormValues[] {
-  return input.map((field) => ({
-    name: field.name,
-    type:
-      field.type === "string" ||
-      field.type === "number" ||
-      field.type === "boolean" ||
-      field.type === "date"
-        ? field.type
-        : "string",
-    path: field.path ?? "",
-  }));
-}
-
-function defaultValues(
-  dataSource?: Doc<"dataSources"> | null
-): DataSourceFormValues {
-  if (!dataSource) {
-    return {
-      name: "",
-      config: {
-        url: "",
-        method: "GET",
-        responseType: "array",
-        headers: [],
-        authType: "none",
-        authConfig: {
-          keyName: "",
-          keyValue: "",
-          location: "header",
-          token: "",
-          username: "",
-          password: "",
-        },
-        queryParams: [],
-        body: "",
-        responseDataPath: "",
-      },
-      schema: [{ name: "", type: "string", path: "" }],
-    };
-  }
-
-  const authConfig =
-    dataSource.config.authConfig && typeof dataSource.config.authConfig === "object"
-      ? (dataSource.config.authConfig as Record<string, unknown>)
-      : {};
-
-  return {
-    name: dataSource.name,
-    config: {
-      url: dataSource.config.url,
-      method: dataSource.config.method,
-      responseType: dataSource.config.responseType,
-      headers: toKeyValuePairs(dataSource.config.headers),
-      authType: dataSource.config.authType ?? "none",
-      authConfig: {
-        keyName:
-          typeof authConfig.keyName === "string" ? authConfig.keyName : "",
-        keyValue:
-          typeof authConfig.keyValue === "string" ? authConfig.keyValue : "",
-        location: authConfig.location === "query" ? "query" : "header",
-        token: typeof authConfig.token === "string" ? authConfig.token : "",
-        username:
-          typeof authConfig.username === "string" ? authConfig.username : "",
-        password:
-          typeof authConfig.password === "string" ? authConfig.password : "",
-      },
-      queryParams: toKeyValuePairs(dataSource.config.queryParams),
-      body: dataSource.config.body ?? "",
-      responseDataPath: dataSource.config.responseDataPath ?? "",
+const DEFAULT_VALUES: DataSourceFormValues = {
+  name: "",
+  config: {
+    url: "",
+    method: "GET",
+    responseType: "array",
+    headers: [],
+    authType: "none",
+    authConfig: {
+      keyName: "",
+      keyValue: "",
+      location: "header",
+      token: "",
+      username: "",
+      password: "",
     },
-    schema: toSchemaFields(dataSource.schema),
-  };
-}
+    queryParams: [],
+    body: "",
+    responseDataPath: "",
+  },
+};
 
 function toRecord(pairs: KeyValuePair[]): Record<string, string> | undefined {
   const value = pairs.reduce<Record<string, string>>((acc, pair) => {
@@ -155,13 +91,10 @@ function toRecord(pairs: KeyValuePair[]): Record<string, string> | undefined {
 
 export function DataSourceWizard({
   projectId,
-  title,
   onCancel,
   onSuccess,
-  dataSource,
 }: DataSourceWizardProps) {
   const createDataSource = useMutation(api.dataSources.create);
-  const updateDataSource = useMutation(api.dataSources.update);
   const testConnection = useAction(api.dataSources.testConnection);
 
   const [step, setStep] = useState(1);
@@ -175,15 +108,15 @@ export function DataSourceWizard({
     DataSourceFormValues
   >({
     resolver: zodResolver(dataSourceSchema),
-    defaultValues: defaultValues(dataSource),
+    defaultValues: DEFAULT_VALUES,
     mode: "onTouched",
   });
 
   useEffect(() => {
-    form.reset(defaultValues(dataSource));
+    form.reset(DEFAULT_VALUES);
     setStep(1);
     setTestResult(null);
-  }, [dataSource, form]);
+  }, [form]);
 
   const responseDataPath = form.watch("config.responseDataPath");
   const watchedName = form.watch("name");
@@ -193,7 +126,6 @@ export function DataSourceWizard({
   const watchedBody = form.watch("config.body");
   const watchedAuthType = form.watch("config.authType");
   const watchedAuthConfig = form.watch("config.authConfig");
-  const watchedSchema = form.watch("schema");
 
   const isCurrentStepValid = useMemo(() => {
     const hasValidUrl = (() => {
@@ -243,19 +175,6 @@ export function DataSourceWizard({
           );
         }
         return true;
-      case 4:
-        return (
-          Array.isArray(watchedSchema) &&
-          watchedSchema.length > 0 &&
-          watchedSchema.every(
-            (field) =>
-              field.name.trim().length > 0 &&
-              (field.type === "string" ||
-                field.type === "number" ||
-                field.type === "boolean" ||
-                field.type === "date")
-          )
-        );
       default:
         return true;
     }
@@ -267,7 +186,6 @@ export function DataSourceWizard({
     watchedMethod,
     watchedName,
     watchedResponseType,
-    watchedSchema,
     watchedUrl,
   ]);
 
@@ -322,12 +240,7 @@ export function DataSourceWizard({
       if (!valid) return;
     }
 
-    if (step === 4) {
-      const valid = await form.trigger("schema");
-      if (!valid) return;
-    }
-
-    setStep((current) => Math.min(5, current + 1));
+    setStep((current) => Math.min(4, current + 1));
   };
 
   const goBack = () => setStep((current) => Math.max(1, current - 1));
@@ -335,14 +248,6 @@ export function DataSourceWizard({
   const onSubmit = async (values: DataSourceFormValues) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-
-    const schema = values.schema
-      .map((field) => ({
-        name: field.name.trim(),
-        type: field.type,
-        path: field.path?.trim() || undefined,
-      }))
-      .filter((field) => field.name.length > 0);
 
     const config = {
       url: values.config.url.trim(),
@@ -360,21 +265,11 @@ export function DataSourceWizard({
     };
 
     try {
-      if (dataSource) {
-        await updateDataSource({
-          id: dataSource._id,
-          name: values.name.trim(),
-          config,
-          schema,
-        });
-      } else {
-        await createDataSource({
-          projectId: projectId as Id<"projects">,
-          name: values.name.trim(),
-          config,
-          schema,
-        });
-      }
+      await createDataSource({
+        projectId: projectId as Id<"projects">,
+        name: values.name.trim(),
+        config,
+      });
 
       onSuccess();
     } finally {
@@ -389,10 +284,10 @@ export function DataSourceWizard({
           className="text-2xl font-bold tracking-tight"
           style={{ fontFamily: "var(--font-display), sans-serif" }}
         >
-          {title}
+          Add Data Source
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Step {step} of 5: {STEP_TITLES[step]}
+          Step {step} of 4: {DATA_SOURCE_STEP_TITLES[step]}
         </p>
       </div>
 
@@ -724,21 +619,6 @@ export function DataSourceWizard({
             )}
 
             {step === 4 && (
-              <Controller
-                name="schema"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <SchemaFieldEditor value={field.value} onChange={field.onChange} />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            )}
-
-            {step === 5 && (
               <div className="space-y-3 rounded-lg border border-amber-400/15 bg-white/3 p-4 text-sm">
                 <p>
                   <span className="text-muted-foreground">Name:</span>{" "}
@@ -760,12 +640,6 @@ export function DataSourceWizard({
                   <span className="text-muted-foreground">Auth type:</span>{" "}
                   {form.getValues("config.authType")}
                 </p>
-                <p>
-                  <span className="text-muted-foreground">Fields:</span>{" "}
-                  {form
-                    .getValues("schema")
-                    .filter((field) => field.name.trim().length > 0).length}
-                </p>
               </div>
             )}
 
@@ -785,7 +659,7 @@ export function DataSourceWizard({
                 >
                   Cancel
                 </Button>
-                {step < 5 ? (
+                {step < 4 ? (
                   <Button
                     type="button"
                     onClick={(clickEvent) => {
@@ -799,13 +673,7 @@ export function DataSourceWizard({
                   </Button>
                 ) : (
                   <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
-                      ? dataSource
-                        ? "Saving..."
-                        : "Creating..."
-                      : dataSource
-                        ? "Save Changes"
-                        : "Create Data Source"}
+                    {isSubmitting ? "Creating..." : "Create Data Source"}
                   </Button>
                 )}
               </div>

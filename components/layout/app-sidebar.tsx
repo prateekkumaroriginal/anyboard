@@ -19,7 +19,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { getColorClass } from "@/lib/constants";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -82,9 +81,6 @@ export function AppSidebar() {
                         tooltip={project.name}
                       >
                         <Link href={`/projects/${project._id}`}>
-                          <div
-                            className={`h-2 w-2 rounded-full shrink-0 ${getColorClass(project.color, index)}`}
-                          />
                           <span className="truncate">{project.name}</span>
                         </Link>
                       </SidebarMenuButton>
@@ -99,7 +95,7 @@ export function AppSidebar() {
 
       <SidebarFooter>
         <Button variant="outline" className="w-full justify-start" asChild>
-          <Link href="/projects/new">
+          <Link prefetch href="/projects/new">
             <Plus className="h-4 w-4" />
             <span>New Project</span>
           </Link>

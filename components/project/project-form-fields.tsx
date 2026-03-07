@@ -16,7 +16,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { ColorPicker } from "@/components/shared/color-picker";
 import { ProjectFormValues } from "@/lib/schemas";
 
 interface ProjectFormFieldsProps {
@@ -95,14 +94,6 @@ export function ProjectFormFields({
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              )}
-            />
-
-            <Controller
-              name="color"
-              control={form.control}
-              render={({ field }) => (
-                <ColorPicker value={field.value} onChange={field.onChange} />
               )}
             />
 

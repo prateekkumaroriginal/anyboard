@@ -20,7 +20,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectFormFields } from "@/components/project/project-form-fields";
 import { DeleteProjectDialog } from "@/components/project/delete-project-dialog";
-import { COLOR_OPTIONS } from "@/lib/constants";
 import { projectSchema, ProjectFormValues } from "@/lib/schemas";
 
 export default function ProjectSettingsPage({
@@ -41,7 +40,7 @@ export default function ProjectSettingsPage({
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
-    defaultValues: { name: "", description: "", color: "" },
+    defaultValues: { name: "", description: "" },
     mode: "onTouched",
   });
 
@@ -50,7 +49,6 @@ export default function ProjectSettingsPage({
       form.reset({
         name: project.name,
         description: project.description ?? "",
-        color: project.color ?? COLOR_OPTIONS[0].value,
       });
     }
   }, [project, form]);
@@ -88,7 +86,6 @@ export default function ProjectSettingsPage({
         id: projectId as Id<"projects">,
         name: values.name.trim(),
         description: values.description?.trim() || undefined,
-        color: values.color,
       });
     } finally {
       setIsSaving(false);
@@ -111,7 +108,7 @@ export default function ProjectSettingsPage({
           form={form}
           onSubmit={handleSave}
           cardTitle="Project Settings"
-          cardDescription="Update your project name, description, and color."
+          cardDescription="Update your project name and description."
           submitLabel="Save Changes"
           submittingLabel="Saving..."
           isSubmitting={isSaving}

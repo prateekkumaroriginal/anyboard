@@ -51,8 +51,6 @@ export default function NewDataSourcePage({
 
         <DataSourceWizard
           projectId={projectId}
-          title="Add Data Source"
-          dataSource={null}
           onCancel={() => router.push(backHref)}
           onSuccess={() => router.push(backHref)}
         />

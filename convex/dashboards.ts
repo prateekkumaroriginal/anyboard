@@ -52,15 +52,13 @@ export const create = mutation({
       throw new Error("Project not found");
     }
 
-    const now = Date.now();
     return ctx.db.insert("dashboards", {
       projectId: args.projectId,
       title: args.title,
       description: args.description,
       isPublic: false,
       layout: [],
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

@@ -6,8 +6,6 @@ export default defineSchema({
     userId: v.string(), // Clerk user ID
     name: v.string(),
     description: v.optional(v.string()),
-    color: v.optional(v.string()),
-    createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_userId", ["userId"]),
 
@@ -36,7 +34,6 @@ export default defineSchema({
         })
       )
     ),
-    createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_projectId", ["projectId"])
@@ -63,13 +60,6 @@ export default defineSchema({
       body: v.optional(v.string()),
       responseDataPath: v.optional(v.string()),
     }),
-    schema: v.array(
-      v.object({
-        name: v.string(),
-        type: v.string(),
-        path: v.optional(v.string()),
-      })
-    ),
     cacheTtl: v.optional(v.number()),
     lastFetchedAt: v.optional(v.number()),
   }).index("by_projectId", ["projectId"]),

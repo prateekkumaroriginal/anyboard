@@ -3,7 +3,6 @@ import { z } from "zod";
 export const projectSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
   description: z.string().max(500),
-  color: z.string().min(1),
 });
 export type ProjectFormValues = z.infer<typeof projectSchema>;
 
@@ -26,13 +25,6 @@ export const keyValuePairSchema = z.object({
   value: z.string(),
 });
 export type KeyValuePair = z.infer<typeof keyValuePairSchema>;
-
-export const schemaFieldSchema = z.object({
-  name: z.string().min(1, "Field name is required"),
-  type: z.enum(["string", "number", "boolean", "date"]),
-  path: z.string().optional(),
-});
-export type SchemaFieldFormValues = z.infer<typeof schemaFieldSchema>;
 
 export const dataSourceConfigSchema = z
   .object({
@@ -127,7 +119,6 @@ export type DataSourceConfigFormValues = z.infer<typeof dataSourceConfigSchema>;
 export const dataSourceSchema = z.object({
   name: z.string().min(1, "Name is required").max(120),
   config: dataSourceConfigSchema,
-  schema: z.array(schemaFieldSchema).min(1, "Add at least one schema field"),
   cacheTtl: z.number().int().positive().optional(),
 });
 export type DataSourceFormValues = z.infer<typeof dataSourceSchema>;

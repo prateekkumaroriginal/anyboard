@@ -15,7 +15,7 @@
 
 - **Files**: kebab-case (`project-form-fields.tsx`, `card-skeleton.tsx`)
 - **Exports**: PascalCase (`ProjectFormFields`, `CardSkeleton`)
-- **Constants**: UPPER_SNAKE_CASE (`PROJECT_COLORS`, `COLOR_OPTIONS`)
+- **Constants**: UPPER_SNAKE_CASE
 
 ## Component Patterns
 
@@ -27,8 +27,7 @@ Pages are thin orchestrators — data fetching + composition of shared component
 
 - `EmptyState` — icon + title + description + optional action button
 - `CardSkeleton` — renders a grid of skeleton cards (uses shadcn `Skeleton`)
-- `ColorPicker` — color circle selector, consumes `COLOR_OPTIONS` from constants
-- `ProjectFormFields` — complete Card with form fields (name, description, color), accepts `form: UseFormReturn<ProjectFormValues>`, `onSubmit`, `cardTitle`, `submitLabel`, `cancelHref`, etc.
+- `ProjectFormFields` — complete Card with form fields (name, description), accepts `form: UseFormReturn<ProjectFormValues>`, `onSubmit`, `cardTitle`, `submitLabel`, `cancelHref`, etc.
 
 ### Dialog Components
 
@@ -79,7 +78,7 @@ Dialogs own their internal `useForm` + submit handler. Parent only passes `open`
 
 - Validate auth: throw `"Not authenticated"` if no identity
 - Validate ownership before update/delete
-- Use `Date.now()` for `createdAt` / `updatedAt`
+- Use `Date.now()` for `updatedAt`
 - Cascade deletes: parallel fetch with `Promise.all`, then parallel delete
 
 ### Schema
@@ -87,7 +86,7 @@ Dialogs own their internal `useForm` + submit handler. Parent only passes `open`
 - User ID stored as `userId: v.string()` (Clerk subject)
 - Relations via `v.id("tableName")`
 - Denormalized `projectId` on `dataSources` and `widgets` for flat cascade deletes
-- Every table has `createdAt` and `updatedAt` timestamps
+- Every table has an `updatedAt` timestamp
 
 ## Auth
 

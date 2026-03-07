@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DataSourceWizard } from "@/components/data-source/data-source-wizard";
+import { DataSourceEditForm } from "@/components/data-source/data-source-edit-form";
 
 export default function EditDataSourcePage({
   params,
@@ -60,8 +60,7 @@ export default function EditDataSourcePage({
           Back to Data Sources
         </Link>
 
-        <DataSourceWizard
-          projectId={projectId}
+        <DataSourceEditForm
           title="Edit Data Source"
           dataSource={dataSource}
           onCancel={() => router.push(backHref)}

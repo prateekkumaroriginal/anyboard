@@ -20,12 +20,6 @@ const dataSourceConfigValidator = v.object({
   responseDataPath: v.optional(v.string()),
 });
 
-const schemaFieldValidator = v.object({
-  name: v.string(),
-  type: v.string(),
-  path: v.optional(v.string()),
-});
-
 export const list = query({
   args: { projectId: v.id("projects") },
   handler: async (ctx, args) => {
@@ -64,7 +58,6 @@ export const create = mutation({
     projectId: v.id("projects"),
     name: v.string(),
     config: dataSourceConfigValidator,
-    schema: v.array(schemaFieldValidator),
     cacheTtl: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -81,7 +74,6 @@ export const create = mutation({
       projectId: args.projectId,
       name: args.name,
       config: args.config,
-      schema: args.schema,
       cacheTtl: args.cacheTtl,
       lastFetchedAt: Date.now(),
     });
@@ -93,7 +85,6 @@ export const update = mutation({
     id: v.id("dataSources"),
     name: v.optional(v.string()),
     config: v.optional(dataSourceConfigValidator),
-    schema: v.optional(v.array(schemaFieldValidator)),
     cacheTtl: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -111,7 +102,6 @@ export const update = mutation({
     const updates: Record<string, unknown> = {};
     if (args.name !== undefined) updates.name = args.name;
     if (args.config !== undefined) updates.config = args.config;
-    if (args.schema !== undefined) updates.schema = args.schema;
     if (args.cacheTtl !== undefined) updates.cacheTtl = args.cacheTtl;
 
     await ctx.db.patch(args.id, updates);

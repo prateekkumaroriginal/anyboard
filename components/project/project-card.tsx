@@ -14,14 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "@/convex/_generated/dataModel";
-import { getColorClass } from "@/lib/constants";
 
 interface ProjectCardProps {
   project: Doc<"projects">;
-  index: number;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
   const projectHref = `/projects/${project._id}`;
   const dataSourcesHref = `${projectHref}/data-sources`;
 
@@ -35,12 +33,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       <Card className="h-full cursor-pointer transition-colors group-hover:border-primary/50">
         <CardHeader>
           <div className="min-w-0 pr-10">
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`h-3 w-3 rounded-full shrink-0 ${getColorClass(project.color, index)}`}
-              />
               <CardTitle className="text-base truncate">{project.name}</CardTitle>
-            </div>
             {project.description && (
               <CardDescription className="line-clamp-2 mt-1">
                 {project.description}

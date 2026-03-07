@@ -31,20 +31,16 @@ export const create = mutation({
   args: {
     name: v.string(),
     description: v.optional(v.string()),
-    color: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
 
-    const now = Date.now();
     return ctx.db.insert("projects", {
       userId: identity.subject,
       name: args.name,
       description: args.description,
-      color: args.color,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });
@@ -54,7 +50,6 @@ export const update = mutation({
     id: v.id("projects"),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
-    color: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -68,7 +63,6 @@ export const update = mutation({
     const updates: Record<string, unknown> = { updatedAt: Date.now() };
     if (args.name !== undefined) updates.name = args.name;
     if (args.description !== undefined) updates.description = args.description;
-    if (args.color !== undefined) updates.color = args.color;
 
     await ctx.db.patch(args.id, updates);
   },
