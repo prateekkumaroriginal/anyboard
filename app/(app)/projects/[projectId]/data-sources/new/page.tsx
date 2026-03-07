@@ -43,6 +43,7 @@ export default function NewDataSourcePage({
       <div className="max-w-3xl mx-auto space-y-6">
         <Link
           href={backHref}
+          prefetch
           className="inline-flex w-fit items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />

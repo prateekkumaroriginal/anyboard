@@ -42,7 +42,6 @@ import {
 } from "@/components/data-source/connection-test-result";
 
 interface DataSourceEditFormProps {
-  title: string;
   onCancel: () => void;
   onSuccess: () => void;
   dataSource: Doc<"dataSources">;
@@ -104,7 +103,6 @@ function toRecord(pairs: KeyValuePair[]): Record<string, string> | undefined {
 }
 
 export function DataSourceEditForm({
-  title,
   onCancel,
   onSuccess,
   dataSource,
@@ -210,7 +208,7 @@ export function DataSourceEditForm({
           className="text-2xl font-bold tracking-tight"
           style={{ fontFamily: "var(--font-display), sans-serif" }}
         >
-          {title}
+          Edit Data Source
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
           Edit data source configuration
