@@ -46,15 +46,15 @@ export default function Showcase3() {
       <div className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-size-[48px_48px]" />
 
       <header className="relative z-10 flex items-center justify-between px-8 py-6 border-b border-white/10">
-        <Link href="/showcase" className="text-lg tracking-[0.3em] uppercase opacity-50 hover:opacity-100 transition-opacity duration-300">
+        <Link prefetch href="/showcase" className="text-lg tracking-[0.3em] uppercase opacity-50 hover:opacity-100 transition-opacity duration-300">
           AnyBoard
         </Link>
         <div className="flex items-center gap-8 text-sm">
-          <Link href="/showcase/2" className="text-white/40 hover:text-white transition-colors duration-300">
+          <Link prefetch href="/showcase/2" className="text-white/40 hover:text-white transition-colors duration-300">
             &larr; Prev
           </Link>
           <span className="text-white/25">03 / 05</span>
-          <Link href="/showcase/4" className="text-white/40 hover:text-white transition-colors duration-300">
+          <Link prefetch href="/showcase/4" className="text-white/40 hover:text-white transition-colors duration-300">
             Next &rarr;
           </Link>
         </div>
@@ -514,8 +514,8 @@ export default function Showcase3() {
 
         {/* ── Nav ── */}
         <div className="flex justify-between items-center pt-8 border-t border-white/10 text-sm">
-          <Link href="/showcase/2" className="text-white/40 hover:text-white transition-colors duration-300">&larr; Bold &amp; Oversized</Link>
-          <Link href="/showcase/4" className="text-white/40 hover:text-white transition-colors duration-300">Outlined &amp; Glowing &rarr;</Link>
+          <Link prefetch href="/showcase/2" className="text-white/40 hover:text-white transition-colors duration-300">&larr; Bold &amp; Oversized</Link>
+          <Link prefetch href="/showcase/4" className="text-white/40 hover:text-white transition-colors duration-300">Outlined &amp; Glowing &rarr;</Link>
         </div>
       </main>
     </div>

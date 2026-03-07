@@ -46,15 +46,15 @@ export default function Showcase2() {
       <div className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-size-[48px_48px]" />
 
       <header className="relative z-10 flex items-center justify-between px-10 py-8 border-b-2 border-white/15">
-        <Link href="/showcase" className="text-xl tracking-[0.3em] uppercase font-bold opacity-60 hover:opacity-100 transition-opacity">
+        <Link prefetch href="/showcase" className="text-xl tracking-[0.3em] uppercase font-bold opacity-60 hover:opacity-100 transition-opacity">
           AnyBoard
         </Link>
         <div className="flex items-center gap-8 text-base font-semibold">
-          <Link href="/showcase/1" className="text-white/40 hover:text-white transition-colors">
+          <Link prefetch href="/showcase/1" className="text-white/40 hover:text-white transition-colors">
             &larr; Prev
           </Link>
           <span className="text-white/30">02 / 05</span>
-          <Link href="/showcase/3" className="text-white/40 hover:text-white transition-colors">
+          <Link prefetch href="/showcase/3" className="text-white/40 hover:text-white transition-colors">
             Next &rarr;
           </Link>
         </div>
@@ -297,8 +297,8 @@ export default function Showcase2() {
 
         {/* ── Nav ── */}
         <div className="flex justify-between items-center pt-10 border-t-2 border-white/15 text-base font-bold">
-          <Link href="/showcase/1" className="text-white/40 hover:text-white transition-colors">&larr; Compact &amp; Dense</Link>
-          <Link href="/showcase/3" className="text-white/40 hover:text-white transition-colors">Soft &amp; Rounded &rarr;</Link>
+          <Link prefetch href="/showcase/1" className="text-white/40 hover:text-white transition-colors">&larr; Compact &amp; Dense</Link>
+          <Link prefetch href="/showcase/3" className="text-white/40 hover:text-white transition-colors">Soft &amp; Rounded &rarr;</Link>
         </div>
       </main>
     </div>

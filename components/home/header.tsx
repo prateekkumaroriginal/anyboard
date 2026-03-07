@@ -12,13 +12,13 @@ export function Header() {
         AnyBoard
       </span>
       <nav className="flex gap-12">
-        <Link href="/" className="opacity-60 hover:opacity-100 transition-opacity">
+        <Link prefetch href="/" className="opacity-60 hover:opacity-100 transition-opacity">
           Product
         </Link>
-        <Link href="/" className="opacity-60 hover:opacity-100 transition-opacity">
+        <Link prefetch href="/" className="opacity-60 hover:opacity-100 transition-opacity">
           Pricing
         </Link>
-        <Link href="/showcase" className="opacity-60 hover:opacity-100 transition-opacity">
+        <Link prefetch href="/showcase" className="opacity-60 hover:opacity-100 transition-opacity">
           Showcase
         </Link>
         <SignedIn>

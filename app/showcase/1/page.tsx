@@ -43,12 +43,12 @@ export default function Showcase1() {
       <div className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-size-[48px_48px]" />
 
       <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-        <Link href="/showcase" className="text-xs tracking-[0.3em] uppercase opacity-50 hover:opacity-100 transition-opacity">
+        <Link prefetch href="/showcase" className="text-xs tracking-[0.3em] uppercase opacity-50 hover:opacity-100 transition-opacity">
           AnyBoard
         </Link>
         <div className="flex items-center gap-6 text-xs">
           <span className="text-white/30">01 / 05</span>
-          <Link href="/showcase/2" className="text-white/50 hover:text-white transition-colors">
+          <Link prefetch href="/showcase/2" className="text-white/50 hover:text-white transition-colors">
             Next &rarr;
           </Link>
         </div>
@@ -288,8 +288,8 @@ export default function Showcase1() {
 
         {/* ── Nav ── */}
         <div className="flex justify-between items-center pt-8 border-t border-white/[0.06] text-xs">
-          <Link href="/showcase" className="text-white/40 hover:text-white transition-colors">&larr; Index</Link>
-          <Link href="/showcase/2" className="text-white/40 hover:text-white transition-colors">Bold &amp; Oversized &rarr;</Link>
+          <Link prefetch href="/showcase" className="text-white/40 hover:text-white transition-colors">&larr; Index</Link>
+          <Link prefetch href="/showcase/2" className="text-white/40 hover:text-white transition-colors">Bold &amp; Oversized &rarr;</Link>
         </div>
       </main>
     </div>

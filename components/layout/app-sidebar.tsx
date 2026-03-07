@@ -28,6 +28,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="h-14 flex-row items-center justify-between border-b border-sidebar-border px-3">
         <Link
+          prefetch
           href="/projects"
           className="flex items-center gap-2"
         >

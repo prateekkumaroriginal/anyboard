@@ -43,6 +43,7 @@ export default function Home() {
             </SignInButton>
           </SignedOut>
           <Link
+            prefetch
             href="/"
             className="px-8 py-4 border border-white/20 hover:border-white/50 transition-colors"
           >

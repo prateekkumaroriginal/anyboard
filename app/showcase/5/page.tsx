@@ -43,15 +43,15 @@ export default function Showcase5() {
       <div className="fixed inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-size-[48px_48px]" />
 
       <header className="relative z-10 flex items-center justify-between px-10 py-8">
-        <Link href="/showcase" className="text-lg tracking-[0.3em] uppercase opacity-40 hover:opacity-100 transition-opacity duration-300">
+        <Link prefetch href="/showcase" className="text-lg tracking-[0.3em] uppercase opacity-40 hover:opacity-100 transition-opacity duration-300">
           AnyBoard
         </Link>
         <div className="flex items-center gap-8 text-base">
-          <Link href="/showcase/4" className="text-white/30 hover:text-white transition-colors duration-300">
+          <Link prefetch href="/showcase/4" className="text-white/30 hover:text-white transition-colors duration-300">
             &larr; Prev
           </Link>
           <span className="text-white/15">05 / 05</span>
-          <Link href="/showcase" className="text-white/30 hover:text-white transition-colors duration-300">
+          <Link prefetch href="/showcase" className="text-white/30 hover:text-white transition-colors duration-300">
             Index
           </Link>
         </div>
@@ -294,8 +294,8 @@ export default function Showcase5() {
 
         {/* ── Nav ── */}
         <div className="flex justify-between items-center pt-12 text-base">
-          <Link href="/showcase/4" className="text-white/25 hover:text-white transition-colors duration-300">&larr; Outlined &amp; Glowing</Link>
-          <Link href="/showcase" className="text-white/25 hover:text-white transition-colors duration-300">Back to Index</Link>
+          <Link prefetch href="/showcase/4" className="text-white/25 hover:text-white transition-colors duration-300">&larr; Outlined &amp; Glowing</Link>
+          <Link prefetch href="/showcase" className="text-white/25 hover:text-white transition-colors duration-300">Back to Index</Link>
         </div>
       </main>
     </div>
