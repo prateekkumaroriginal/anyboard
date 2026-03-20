@@ -26,6 +26,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="group relative h-full">
       <Link
+        prefetch
         href={projectHref}
         className="absolute inset-0 z-10 rounded-xl"
         aria-label={`Open ${project.name}`}
@@ -50,7 +51,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href={dataSourcesHref}>
+                  <Link prefetch href={dataSourcesHref}>
                     <Database className="h-4 w-4 mr-2" />
                     Data Sources
                   </Link>

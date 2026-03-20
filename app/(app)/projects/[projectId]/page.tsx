@@ -59,7 +59,7 @@ export default function ProjectDetailPage({
               {project.name}
             </h1>
             <Button variant="ghost" size="icon" asChild>
-              <Link href={`/projects/${projectId}/settings`}>
+              <Link prefetch href={`/projects/${projectId}/settings`}>
                 <Settings className="h-4 w-4" />
               </Link>
             </Button>
@@ -72,7 +72,7 @@ export default function ProjectDetailPage({
         </div>
         <div className="flex gap-2 items-center">
           <Button variant="outline" asChild>
-            <Link href={`/projects/${projectId}/data-sources`}>
+            <Link prefetch href={`/projects/${projectId}/data-sources`}>
               <Database className="h-4 w-4 mr-2" />
               Data Sources
             </Link>

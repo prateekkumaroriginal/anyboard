@@ -95,6 +95,7 @@ export default function ProjectSettingsPage({
   return (
     <div className="max-w-lg mx-auto">
       <Link
+        prefetch
         href={`/projects/${projectId}`}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >

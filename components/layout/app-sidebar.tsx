@@ -81,7 +81,7 @@ export function AppSidebar() {
                         isActive={isActive}
                         tooltip={project.name}
                       >
-                        <Link href={`/projects/${project._id}`}>
+                        <Link prefetch href={`/projects/${project._id}`}>
                           <span className="truncate">{project.name}</span>
                         </Link>
                       </SidebarMenuButton>

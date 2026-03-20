@@ -31,6 +31,7 @@ export function DashboardCard({
   return (
     <div className="group relative h-full">
       <Link
+        prefetch
         href={dashboardHref}
         className="absolute inset-0 z-10 rounded-xl"
         aria-label={`Open ${dashboard.title}`}

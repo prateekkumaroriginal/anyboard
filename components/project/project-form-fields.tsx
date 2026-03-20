@@ -106,7 +106,7 @@ export function ProjectFormFields({
               </Button>
               {cancelHref && (
                 <Button variant="ghost" asChild>
-                  <Link href={cancelHref}>Cancel</Link>
+                  <Link prefetch href={cancelHref}>Cancel</Link>
                 </Button>
               )}
             </div>

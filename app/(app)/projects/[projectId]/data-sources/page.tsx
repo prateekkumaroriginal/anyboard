@@ -65,6 +65,7 @@ export default function ProjectDataSourcesPage({
     <div className="max-w-5xl mx-auto">
       <div className="mb-8 space-y-3">
         <Link
+          prefetch
           href={`/projects/${projectId}`}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
