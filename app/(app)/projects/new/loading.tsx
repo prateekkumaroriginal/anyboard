@@ -4,9 +4,6 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 export default function NewProjectLoading() {
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-4 rounded-md bg-yellow-400/20 border border-yellow-400/50 px-3 py-1.5 text-xs font-mono text-yellow-300 w-fit">
-        Hello from NewProjectLoading
-      </div>
       <Skeleton className="h-4 w-16 mb-6" />
       <Card>
         <CardHeader>
