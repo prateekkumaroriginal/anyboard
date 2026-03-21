@@ -55,7 +55,6 @@ export function KeyValueEditor({
               value={row.key}
               onChange={(event) => updateRow(index, "key", event.target.value)}
               placeholder={keyPlaceholder}
-              className="bg-white/3 border-amber-400/15"
             />
             <Input
               value={row.value}
@@ -63,7 +62,6 @@ export function KeyValueEditor({
                 updateRow(index, "value", event.target.value)
               }
               placeholder={valuePlaceholder}
-              className="bg-white/3 border-amber-400/15"
             />
             <Button
               type="button"

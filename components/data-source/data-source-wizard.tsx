@@ -300,7 +300,6 @@ export function DataSourceWizard({
                         {...field}
                         id="datasource-name"
                         placeholder="e.g. Public Stats API"
-                        className="bg-white/3 border-amber-400/15"
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -321,7 +320,6 @@ export function DataSourceWizard({
                         {...field}
                         id="datasource-url"
                         placeholder="https://api.example.com/data"
-                        className="bg-white/3 border-amber-400/15"
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -337,7 +335,7 @@ export function DataSourceWizard({
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Method</FieldLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-white/3 border-amber-400/15">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -362,7 +360,7 @@ export function DataSourceWizard({
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Response type</FieldLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-white/3 border-amber-400/15">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -392,7 +390,6 @@ export function DataSourceWizard({
                           id="datasource-body"
                           rows={4}
                           placeholder='{"limit": 10}'
-                          className="bg-white/3 border-amber-400/15"
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -413,7 +410,7 @@ export function DataSourceWizard({
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Authentication</FieldLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-white/3 border-amber-400/15">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -442,7 +439,6 @@ export function DataSourceWizard({
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/3 border-amber-400/15"
                             placeholder="x-api-key"
                           />
                         </Field>
@@ -457,7 +453,6 @@ export function DataSourceWizard({
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/3 border-amber-400/15"
                             placeholder="••••••••"
                           />
                         </Field>
@@ -473,7 +468,7 @@ export function DataSourceWizard({
                             value={field.value ?? "header"}
                             onValueChange={field.onChange}
                           >
-                            <SelectTrigger className="bg-white/3 border-amber-400/15">
+                            <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -497,7 +492,6 @@ export function DataSourceWizard({
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          className="bg-white/3 border-amber-400/15"
                           placeholder="eyJ..."
                         />
                       </Field>
@@ -516,7 +510,6 @@ export function DataSourceWizard({
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/3 border-amber-400/15"
                           />
                         </Field>
                       )}
@@ -531,7 +524,6 @@ export function DataSourceWizard({
                             {...field}
                             type="password"
                             value={field.value ?? ""}
-                            className="bg-white/3 border-amber-400/15"
                           />
                         </Field>
                       )}
@@ -593,7 +585,6 @@ export function DataSourceWizard({
                         {...field}
                         id="response-path"
                         placeholder="data.results (leave empty for root)"
-                        className="bg-white/3 border-amber-400/15"
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
