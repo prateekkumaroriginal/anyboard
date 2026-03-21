@@ -49,14 +49,6 @@ interface DataSourceWizardProps {
 
 type DataSourceFormInputValues = z.input<typeof dataSourceSchema>;
 
-function toKeyValuePairs(input: unknown): KeyValuePair[] {
-  if (!input || typeof input !== "object" || Array.isArray(input)) return [];
-  return Object.entries(input as Record<string, unknown>).map(([key, value]) => ({
-    key,
-    value: typeof value === "string" ? value : JSON.stringify(value),
-  }));
-}
-
 const DEFAULT_VALUES: DataSourceFormValues = {
   name: "",
   config: {
