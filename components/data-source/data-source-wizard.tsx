@@ -10,7 +10,6 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import {
   AUTH_TYPE_OPTIONS,
   HTTP_METHOD_OPTIONS,
-  RESPONSE_TYPE_OPTIONS,
   DATA_SOURCE_STEP_TITLES,
 } from "@/lib/constants";
 import { extractDataAtPath } from "@/lib/data-utils";
@@ -54,7 +53,6 @@ const DEFAULT_VALUES: DataSourceFormValues = {
   config: {
     url: "",
     method: "GET",
-    responseType: "array",
     headers: [],
     authType: "none",
     authConfig: {
@@ -114,7 +112,6 @@ export function DataSourceWizard({
   const watchedName = form.watch("name");
   const watchedUrl = form.watch("config.url");
   const watchedMethod = form.watch("config.method");
-  const watchedResponseType = form.watch("config.responseType");
   const watchedBody = form.watch("config.body");
   const watchedAuthType = form.watch("config.authType");
   const watchedAuthConfig = form.watch("config.authConfig");
@@ -147,7 +144,6 @@ export function DataSourceWizard({
         return (
           Boolean(watchedName?.trim()) &&
           hasValidUrl &&
-          (watchedResponseType === "array" || watchedResponseType === "object") &&
           hasValidPostBody
         );
       case 2:
@@ -177,7 +173,6 @@ export function DataSourceWizard({
     watchedBody,
     watchedMethod,
     watchedName,
-    watchedResponseType,
     watchedUrl,
   ]);
 
@@ -205,7 +200,6 @@ export function DataSourceWizard({
         config: {
           url: values.config.url.trim(),
           method: values.config.method,
-          responseType: values.config.responseType,
           headers: toRecord(values.config.headers ?? []),
           authType: values.config.authType,
           authConfig: values.config.authConfig,
@@ -226,7 +220,6 @@ export function DataSourceWizard({
         "name",
         "config.url",
         "config.method",
-        "config.responseType",
         "config.body",
       ]);
       if (!valid) return;
@@ -244,7 +237,6 @@ export function DataSourceWizard({
     const config = {
       url: values.config.url.trim(),
       method: values.config.method,
-      responseType: values.config.responseType,
       headers: toRecord(values.config.headers),
       authType: values.config.authType,
       authConfig: values.config.authConfig,
@@ -340,31 +332,6 @@ export function DataSourceWizard({
                         </SelectTrigger>
                         <SelectContent>
                           {HTTP_METHOD_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="config.responseType"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Response type</FieldLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {RESPONSE_TYPE_OPTIONS.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}
                             </SelectItem>
@@ -614,10 +581,6 @@ export function DataSourceWizard({
                 <p>
                   <span className="text-muted-foreground">Method:</span>{" "}
                   {form.getValues("config.method")}
-                </p>
-                <p>
-                  <span className="text-muted-foreground">Response type:</span>{" "}
-                  {form.getValues("config.responseType")}
                 </p>
                 <p>
                   <span className="text-muted-foreground">Auth type:</span>{" "}

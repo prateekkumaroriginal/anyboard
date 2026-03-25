@@ -45,7 +45,6 @@ export default defineSchema({
     config: v.object({
       url: v.string(),
       method: v.union(v.literal("GET"), v.literal("POST")),
-      responseType: v.union(v.literal("array"), v.literal("object")),
       headers: v.optional(v.any()),
       authType: v.optional(
         v.union(
@@ -69,22 +68,21 @@ export default defineSchema({
     dashboardId: v.id("dashboards"),
     dataSourceId: v.optional(v.id("dataSources")),
     type: v.union(
-      v.literal("kpi"),
-      v.literal("table"),
-      v.literal("lineChart"),
-      v.literal("barChart"),
-      v.literal("pieChart"),
-      v.literal("donutChart"),
-      v.literal("areaChart"),
-      v.literal("scatterPlot"),
-      v.literal("gauge"),
-      v.literal("text"),
-      v.literal("progressBar")
+      v.literal("KPI"),
+      v.literal("TABLE"),
+      v.literal("LINE_CHART"),
+      v.literal("BAR_CHART"),
+      v.literal("PIE_CHART"),
+      v.literal("DONUT_CHART"),
+      v.literal("AREA_CHART"),
+      v.literal("SCATTER_PLOT"),
+      v.literal("GAUGE"),
+      v.literal("PROGRESS_BAR")
     ),
     title: v.string(),
     config: v.any(),
-    transforms: v.optional(v.array(v.any())),
-    conditionalFormatting: v.optional(v.array(v.any())),
+    valuePath: v.optional(v.string()),
+    updatedAt: v.number(),
   })
     .index("by_dashboardId", ["dashboardId"])
     .index("by_projectId", ["projectId"]),

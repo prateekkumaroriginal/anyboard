@@ -8,9 +8,11 @@
  * @module
  */
 
+import type * as _lib_fetchDatasource from "../_lib/fetchDatasource.js";
 import type * as dashboards from "../dashboards.js";
 import type * as dataSources from "../dataSources.js";
 import type * as projects from "../projects.js";
+import type * as widgets from "../widgets.js";
 
 import type {
   ApiFromModules,
@@ -19,9 +21,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "_lib/fetchDatasource": typeof _lib_fetchDatasource;
   dashboards: typeof dashboards;
   dataSources: typeof dataSources;
   projects: typeof projects;
+  widgets: typeof widgets;
 }>;
 
 /**

@@ -10,9 +10,17 @@ export const AUTH_TYPE_OPTIONS = [
   { value: "basic", label: "Basic Auth" },
 ] as const;
 
-export const RESPONSE_TYPE_OPTIONS = [
-  { value: "array", label: "Array of records" },
-  { value: "object", label: "Single object/value" },
+export const WIDGET_TYPE_OPTIONS = [
+  { value: "KPI", label: "KPI", description: "Single value metric" },
+  { value: "GAUGE", label: "Gauge", description: "Numeric gauge dial" },
+  { value: "PROGRESS_BAR", label: "Progress", description: "Progress bar" },
+  { value: "TABLE", label: "Table", description: "Data table" },
+  { value: "LINE_CHART", label: "Line Chart", description: "Line chart" },
+  { value: "BAR_CHART", label: "Bar Chart", description: "Bar chart" },
+  { value: "AREA_CHART", label: "Area Chart", description: "Area chart" },
+  { value: "PIE_CHART", label: "Pie Chart", description: "Pie chart" },
+  { value: "DONUT_CHART", label: "Donut Chart", description: "Donut chart" },
+  { value: "SCATTER_PLOT", label: "Scatter", description: "Scatter plot" },
 ] as const;
 
 export const FIELD_TYPE_OPTIONS = [

@@ -1,8 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
@@ -14,20 +14,18 @@ import { CardSkeleton } from "@/components/shared/card-skeleton";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { CreateDashboardDialog } from "@/components/dashboard/create-dashboard-dialog";
 
-export default function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const { projectId } = use(params);
+export default function ProjectDetailPage() {
+  const { projectId } = useParams() as { projectId: string };
   const router = useRouter();
 
-  const project = useQuery(api.projects.get, {
-    id: projectId as Id<"projects">,
-  });
-  const dashboards = useQuery(api.dashboards.listByProject, {
-    projectId: projectId as Id<"projects">,
-  });
+  const project = useQuery(
+    api.projects.get,
+    projectId ? { id: projectId as Id<"projects"> } : "skip"
+  );
+  const dashboards = useQuery(
+    api.dashboards.listByProject,
+    projectId ? { projectId: projectId as Id<"projects"> } : "skip"
+  );
 
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [editingDashboard, setEditingDashboard] =

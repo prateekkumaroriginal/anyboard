@@ -49,6 +49,18 @@ function useBreadcrumbs(): Crumb[] {
     isValidProjectId ? { id: projectId as Id<"projects"> } : "skip"
   );
 
+  // Extract dashboardId if present
+  const dashboardIdIndex = segments.indexOf("dashboards") !== -1 ? segments.indexOf("dashboards") + 1 : -1;
+  const dashboardId =
+    dashboardIdIndex > 0 && dashboardIdIndex < segments.length && segments[dashboardIdIndex] !== "new"
+      ? segments[dashboardIdIndex]
+      : undefined;
+
+  const dashboard = useQuery(
+    api.dashboards.get,
+    dashboardId ? { id: dashboardId as Id<"dashboards"> } : "skip"
+  );
+
   const crumbs: Crumb[] = [];
   let path = "";
 
@@ -56,10 +68,18 @@ function useBreadcrumbs(): Crumb[] {
     const segment = segments[i];
     path += `/${segment}`;
 
-    // Skip IDs that aren't the project ID (e.g. dataSourceId, dashboardId)
+    // If we are at the "dashboards" segment and we have a specific dashboard, skip the word "dashboards" entirely
+    if (segment === "dashboards" && dashboardId) {
+      continue;
+    }
+
     const isProjectId = i === projectIdIndex;
+    const isDashboardId = i === dashboardIdIndex && !!dashboardId;
+    
+    // Skip IDs that aren't the project ID or dashboard ID (e.g. dataSourceId)
     const isOtherId =
       !isProjectId &&
+      !isDashboardId &&
       !STATIC_LABELS[segment] &&
       segment.length > 10;
 
@@ -68,8 +88,13 @@ function useBreadcrumbs(): Crumb[] {
         label: project?.name ?? "…",
         href: path,
       });
+    } else if (isDashboardId) {
+      crumbs.push({
+        label: dashboard?.title ?? "…",
+        href: path,
+      });
     } else if (isOtherId) {
-      // Skip non-project IDs (dataSourceId, dashboardId)
+      // Skip non-project/dashboard IDs (dataSourceId)
       continue;
     } else {
       const label = STATIC_LABELS[segment] ?? segment;

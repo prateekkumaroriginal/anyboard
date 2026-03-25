@@ -1,10 +1,10 @@
 import { v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
+import { fetchDatasource } from "./_lib/fetchDatasource";
 
 const dataSourceConfigValidator = v.object({
   url: v.string(),
   method: v.union(v.literal("GET"), v.literal("POST")),
-  responseType: v.union(v.literal("array"), v.literal("object")),
   headers: v.optional(v.any()),
   authType: v.optional(
     v.union(
@@ -136,25 +136,6 @@ export const remove = mutation({
   },
 });
 
-function toStringRecord(input: unknown): Record<string, string> {
-  if (!input || typeof input !== "object" || Array.isArray(input)) return {};
-
-  return Object.entries(input as Record<string, unknown>).reduce<
-    Record<string, string>
-  >((acc, [key, value]) => {
-    if (typeof value === "string" && key.trim()) {
-      acc[key.trim()] = value;
-    }
-    return acc;
-  }, {});
-}
-
-function basicAuthToken(username: string, password: string): string {
-  const payload = `${username}:${password}`;
-  if (typeof btoa === "function") return btoa(payload);
-  return Buffer.from(payload).toString("base64");
-}
-
 export const testConnection = action({
   args: {
     config: dataSourceConfigValidator,
@@ -165,90 +146,6 @@ export const testConnection = action({
       return { success: false as const, error: "Not authenticated" };
     }
 
-    const headers = toStringRecord(args.config.headers);
-    const queryParams = toStringRecord(args.config.queryParams);
-
-    const authConfig =
-      args.config.authConfig && typeof args.config.authConfig === "object"
-        ? (args.config.authConfig as Record<string, unknown>)
-        : {};
-
-    if (args.config.authType === "bearer") {
-      const token =
-        typeof authConfig.token === "string" ? authConfig.token.trim() : "";
-      if (token) headers.Authorization = `Bearer ${token}`;
-    }
-
-    if (args.config.authType === "basic") {
-      const username =
-        typeof authConfig.username === "string"
-          ? authConfig.username.trim()
-          : "";
-      const password =
-        typeof authConfig.password === "string" ? authConfig.password : "";
-      if (username || password) {
-        headers.Authorization = `Basic ${basicAuthToken(username, password)}`;
-      }
-    }
-
-    if (args.config.authType === "apiKey") {
-      const keyName =
-        typeof authConfig.keyName === "string" ? authConfig.keyName.trim() : "";
-      const keyValue =
-        typeof authConfig.keyValue === "string" ? authConfig.keyValue : "";
-      const location =
-        authConfig.location === "query" ? "query" : ("header" as const);
-
-      if (keyName && keyValue) {
-        if (location === "query") {
-          queryParams[keyName] = keyValue;
-        } else {
-          headers[keyName] = keyValue;
-        }
-      }
-    }
-
-    const requestUrl = new URL(args.config.url);
-    for (const [key, value] of Object.entries(queryParams)) {
-      requestUrl.searchParams.set(key, value);
-    }
-
-    const method = args.config.method;
-    const init: RequestInit = { method, headers };
-
-    if (method === "POST" && args.config.body) {
-      init.body = args.config.body;
-      if (!headers["Content-Type"]) {
-        headers["Content-Type"] = "application/json";
-      }
-    }
-
-    try {
-      const response = await fetch(requestUrl.toString(), init);
-      const contentType = response.headers.get("content-type") ?? "";
-      const isJson = contentType.includes("application/json");
-      const payload = isJson ? await response.json() : await response.text();
-
-      if (!response.ok) {
-        return {
-          success: false as const,
-          error: `Request failed with status ${response.status}`,
-          status: response.status,
-          data: payload,
-        };
-      }
-
-      return {
-        success: true as const,
-        status: response.status,
-        data: payload,
-      };
-    } catch (error) {
-      return {
-        success: false as const,
-        error:
-          error instanceof Error ? error.message : "Unable to reach the API",
-      };
-    }
+    return await fetchDatasource(args.config);
   },
 });

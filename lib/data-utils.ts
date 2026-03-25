@@ -27,3 +27,14 @@ export function extractDataAtPath(response: unknown, path?: string): unknown {
 
   return current;
 }
+
+/** Apply datasource responseDataPath then widget valuePath in sequence. */
+export function resolveWidgetData(
+  response: unknown,
+  responseDataPath?: string,
+  valuePath?: string
+): unknown {
+  let data = extractDataAtPath(response, responseDataPath);
+  data = extractDataAtPath(data, valuePath);
+  return data;
+}

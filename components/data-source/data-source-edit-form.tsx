@@ -10,7 +10,6 @@ import { Doc } from "@/convex/_generated/dataModel";
 import {
   AUTH_TYPE_OPTIONS,
   HTTP_METHOD_OPTIONS,
-  RESPONSE_TYPE_OPTIONS,
   DATA_SOURCE_STEP_TITLES,
 } from "@/lib/constants";
 import { extractDataAtPath } from "@/lib/data-utils";
@@ -70,7 +69,6 @@ function defaultValues(
     config: {
       url: dataSource.config.url,
       method: dataSource.config.method,
-      responseType: dataSource.config.responseType,
       headers: toKeyValuePairs(dataSource.config.headers),
       authType: dataSource.config.authType ?? "none",
       authConfig: {
@@ -154,7 +152,6 @@ export function DataSourceEditForm({
         config: {
           url: values.config.url.trim(),
           method: values.config.method,
-          responseType: values.config.responseType,
           headers: toRecord(values.config.headers ?? []),
           authType: values.config.authType,
           authConfig: values.config.authConfig,
@@ -176,7 +173,6 @@ export function DataSourceEditForm({
     const config = {
       url: values.config.url.trim(),
       method: values.config.method,
-      responseType: values.config.responseType,
       headers: toRecord(values.config.headers),
       authType: values.config.authType,
       authConfig: values.config.authConfig,
@@ -250,7 +246,6 @@ export function DataSourceEditForm({
                 )}
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller
                   name="config.method"
                   control={form.control}
@@ -273,30 +268,6 @@ export function DataSourceEditForm({
                     </Field>
                   )}
                 />
-
-                <Controller
-                  name="config.responseType"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Response type</FieldLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {RESPONSE_TYPE_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-              </div>
 
               {form.watch("config.method") === "POST" && (
                 <Controller
